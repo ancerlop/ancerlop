@@ -1,0 +1,296 @@
+/* =========================================================================
+   ancerlop · css/lab.css
+   El taller: los dos artefactos interactivos (descenso de gradiente y vivero
+   procedural). Todo dibujado con canvas 2D y SVG a mano, sin dependencias.
+   ========================================================================= */
+@layer tokens, base, layout, components, motion, utils;
+
+@layer components {
+
+  /* ==================== estructura común de laboratorio ==================== */
+  .lab {
+    display: grid;
+    gap: 1px;
+    background: var(--w-line);
+    border: 1px solid var(--w-line);
+    margin-top: clamp(1.5rem, 4vh, 2.6rem);
+  }
+
+  @media (min-width: 880px) {
+    .lab { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); }
+  }
+
+  .lab__stage {
+    position: relative;
+    background: var(--panel-shop);
+    min-height: 20rem;
+    touch-action: none;
+    cursor: crosshair;
+  }
+
+  .lab__stage canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    aspect-ratio: 4 / 3;
+  }
+
+  @media (min-width: 880px) {
+    .lab__stage canvas { aspect-ratio: auto; position: absolute; inset: 0; }
+  }
+
+  .lab__badge {
+    position: absolute;
+    top: .8rem;
+    left: .9rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-family: var(--mono);
+    font-size: var(--t--1);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--dim-shop);
+    pointer-events: none;
+  }
+
+  .lab__badge i {
+    width: .5rem; height: .5rem;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  .lab__badge[data-state="paused"] i { background: var(--ember); animation: none; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .25; }
+  }
+
+  .lab__hint {
+    position: absolute;
+    right: .9rem;
+    bottom: .8rem;
+    z-index: 2;
+    font-family: var(--mono);
+    font-size: var(--t--1);
+    color: var(--dim-shop);
+    opacity: .8;
+    pointer-events: none;
+    text-align: right;
+    max-width: 26ch;
+    line-height: 1.6;
+  }
+
+  /* panel lateral de mandos */
+  .lab__panel {
+    background: var(--panel-shop);
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+    display: grid;
+    gap: 1.1rem;
+    align-content: start;
+  }
+
+  .lab__panel h3 {
+    font-family: var(--mono);
+    font-size: var(--t--1);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+
+  .lab__panel p { font-size: var(--t--1); color: var(--dim-shop); line-height: 1.7; }
+
+  .readouts {
+    display: grid;
+    gap: .55rem;
+    margin: 0;
+    padding: .2rem 0 0;
+    font-family: var(--mono);
+    font-size: var(--t--1);
+  }
+
+  .readout {
+    display: flex;
+    align-items: baseline;
+    gap: .6rem;
+  }
+
+  .readout dt {
+    color: var(--dim-shop);
+    letter-spacing: .06em;
+  }
+
+  .readout dt::after {
+    content: "";
+    flex: 1;
+  }
+
+  .readout dd {
+    margin: 0 0 0 auto;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg-shop);
+    font-weight: 500;
+  }
+
+  .eq {
+    padding: .8rem 1rem;
+    border: 1px dashed var(--line-shop);
+    font-family: var(--mono);
+    font-size: var(--t--1);
+    color: var(--fg-shop);
+    text-align: center;
+    letter-spacing: .04em;
+    background: color-mix(in srgb, var(--teal) 5%, transparent);
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+
+  .ctl {
+    font-family: var(--mono);
+    font-size: var(--t--1);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: .55rem .85rem;
+    border: 1px solid var(--line-shop);
+    background: transparent;
+    color: var(--fg-shop);
+    border-radius: 99px;
+    cursor: pointer;
+    transition: background-color .2s var(--ease), color .2s var(--ease),
+                border-color .2s var(--ease);
+  }
+
+  .ctl:hover { border-color: var(--teal); color: var(--teal); }
+  .ctl[aria-pressed="true"] { background: var(--fg-shop); color: var(--bg-shop); border-color: var(--fg-shop); }
+
+  .slider {
+    display: grid;
+    gap: .35rem;
+  }
+
+  .slider label {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: var(--mono);
+    font-size: var(--t--1);
+    color: var(--dim-shop);
+    letter-spacing: .06em;
+  }
+
+  .slider output { color: var(--teal); font-weight: 500; }
+
+  .slider input[type="range"] {
+    width: 100%;
+    accent-color: var(--teal);
+    height: 1.4rem;
+  }
+
+  .hint {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    line-height: 1.65;
+    color: var(--dim-shop);
+  }
+
+  /* curva de pérdida */
+  .loss {
+    border: 1px solid var(--line-shop);
+    background: color-mix(in srgb, var(--teal) 4%, transparent);
+  }
+
+  .loss canvas { width: 100%; height: 4.5rem; display: block; }
+
+  /* ==================== vivero procedural (Kreatures) ==================== */
+  .vivero {
+    margin-top: clamp(1.5rem, 4vh, 2.6rem);
+    border: 1px solid var(--line-shop);
+    background: var(--panel-shop);
+  }
+
+  .vivero__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .8rem 1.2rem;
+    justify-content: space-between;
+    padding: .9rem clamp(1rem, 3vw, 1.4rem);
+    border-bottom: 1px solid var(--line-shop);
+  }
+
+  .vivero__bar p {
+    font-family: var(--mono);
+    font-size: var(--t--1);
+    color: var(--dim-shop);
+    letter-spacing: .04em;
+  }
+
+  .vivero__grid {
+    display: grid;
+    /* auto-fit, no auto-fill: con seis criaturas, auto-fill deja una celda
+       vacía al final de la fila y se nota muchísimo */
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    gap: 1px;
+    background: var(--line-shop);
+  }
+
+  .critter {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    padding: 0;
+    border: 0;
+    background: var(--panel-shop);
+    cursor: pointer;
+    overflow: hidden;
+    transition: background-color .3s var(--ease);
+  }
+
+  .critter:hover,
+  .critter:focus-visible { background: color-mix(in srgb, var(--teal) 7%, var(--panel-shop)); }
+
+  .critter svg {
+    width: 100%;
+    height: 100%;
+    transition: scale .5s var(--ease), rotate .5s var(--ease);
+  }
+
+  .critter:hover svg { scale: 1.06; }
+
+  .critter.is-new svg { animation: hatch .55s var(--ease); }
+
+  @keyframes hatch {
+    from { opacity: 0; scale: .82; rotate: -6deg; }
+    to { opacity: 1; scale: 1; rotate: 0deg; }
+  }
+
+  .critter__seed {
+    position: absolute;
+    left: .5rem;
+    bottom: .4rem;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: .1em;
+    color: color-mix(in srgb, var(--fg-shop) 40%, transparent);
+    pointer-events: none;
+  }
+
+  /* medido con tools/capture/checks.html: con la mezcla al 40% la semilla se
+     quedaba en 2.85:1, por debajo de AA. Al 66% sube a ~4.9:1 y sigue siendo
+     discreta, que es lo que se le pide a una etiqueta secundaria. */
+  .critter__seed { color: color-mix(in srgb, var(--fg-shop) 66%, transparent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .critter svg, .critter:hover svg { scale: 1 !important; animation: none !important; }
+    .lab__badge i { animation: none !important; }
+  }
+}

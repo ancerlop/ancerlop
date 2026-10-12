@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mockup 01 · Editorial suizo — ancerlop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#f1efe9; --ink:#0c0c0c; --rule:#0c0c0c; --dim:#6b6a64; --sig:#c42a17;
+    --sans:'Archivo',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+    --gut:clamp(16px,4vw,56px);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+       font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  h1,h2,h3,p{margin:0}
+
+  .mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+
+  /* ---------- barra ---------- */
+  header{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule);
+         display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px var(--gut)}
+  .firma{font-weight:900;letter-spacing:-.03em;font-size:15px}
+  header nav{display:flex;gap:clamp(12px,2.5vw,32px)}
+  header nav a{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+               text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent}
+  header nav a:hover{border-color:var(--sig);color:var(--sig)}
+
+  main{padding:0 var(--gut)}
+  section{border-bottom:1px solid var(--rule);padding:clamp(34px,7vh,72px) 0}
+  .rot{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:clamp(22px,4vh,40px)}
+  .rot b{color:var(--sig);font-weight:500}
+
+  /* ---------- portada ---------- */
+  .hero{padding-top:clamp(40px,10vh,96px)}
+  .hero h1{font-weight:900;font-size:clamp(38px,7.6vw,104px);line-height:.94;letter-spacing:-.035em;max-width:min(20ch,100%)}
+  .hero h1 i{font-style:normal;color:var(--dim)}
+  .sub{margin-top:clamp(20px,4vh,36px);display:grid;gap:1px;background:var(--rule);
+       border:1px solid var(--rule);grid-template-columns:1fr}
+  @media(min-width:800px){.sub{grid-template-columns:repeat(3,1fr)}}
+  .sub div{background:var(--paper);padding:18px 18px 22px}
+  .sub h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-family:var(--mono);
+          font-weight:500;margin-bottom:10px;color:var(--sig)}
+  .sub p{font-size:15px;color:#26261f;max-width:min(34ch,100%)}
+
+  /* ---------- datos ---------- */
+  .datos dl{margin:0;display:grid;gap:0}
+  .datos .fila{display:grid;grid-template-columns:1fr;gap:4px;padding:12px 0;border-top:1px solid var(--rule)}
+  @media(min-width:760px){.datos .fila{grid-template-columns:200px 1fr;gap:24px;align-items:baseline}}
+  .datos dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .datos dd{margin:0;font-size:16px}
+  .datos dd b{font-weight:600}
+
+  /* ---------- trabajo ---------- */
+  .obras{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+  @media(min-width:900px){.obras{grid-template-columns:repeat(3,1fr)}}
+  .obra{background:var(--paper);padding:22px 20px 26px;display:grid;gap:10px;align-content:start}
+  .obra .num{font-family:var(--mono);font-size:34px;font-weight:500;line-height:1;color:var(--sig)}
+  .obra h3{font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .obra p{font-size:14px;color:#3d3d35}
+
+  /* ---------- hueco de imagen ---------- */
+  .hueco{border:1px dashed #9a988f;min-height:clamp(160px,26vh,260px);display:grid;place-items:center;
+         text-align:center;padding:20px;background:
+         repeating-linear-gradient(45deg,transparent 0 9px,rgba(12,12,12,.035) 9px 10px)}
+  .hueco span{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+
+  /* ---------- pie ---------- */
+  footer{padding:clamp(30px,6vh,60px) var(--gut) 44px;display:grid;gap:20px}
+  @media(min-width:800px){footer{grid-template-columns:1.4fr 1fr}}
+  .contacto{display:grid;gap:8px;font-size:clamp(20px,3vw,30px);font-weight:700;letter-spacing:-.02em}
+  .contacto a{text-decoration:none;border-bottom:2px solid var(--sig)}
+  .legal{font-family:var(--mono);font-size:11px;line-height:1.9;color:var(--dim);letter-spacing:.06em}
+
+  .marca{position:fixed;right:10px;bottom:10px;z-index:20;font-family:var(--mono);font-size:10px;
+         letter-spacing:.14em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:5px 9px;opacity:.85}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="firma">ANCERLOP</span>
+  <nav>
+    <a href="#ahora">Ahora</a>
+    <a href="#trabajo">Trabajo</a>
+    <a href="#datos">Datos</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="rot mono"><span>01 — <b>Quién</b></span><span>Málaga, ES</span></div>
+    <h1>Director técnico.<br><i>Inteligencia artificial.</i><br>Videojuegos.</h1>
+
+    <div class="sub" id="ahora" style="margin-top:clamp(28px,5vh,48px)">
+      <div>
+        <h2>Ahora</h2>
+        <p>Empiezo el <strong>13 de octubre de 2026</strong> como Director Técnico en <strong>Koniec Films</strong>, estudio de animación.</p>
+      </div>
+      <div>
+        <h2>Antes</h2>
+        <p>Laboratorio de inteligencia artificial: modelos, datos y despliegue en producción.</p>
+      </div>
+      <div>
+        <h2>Siempre</h2>
+        <p><strong>Kreatures</strong>, mi estudio creativo-tecnológico en el Polo de Contenidos Digitales de Málaga.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="trabajo">
+    <div class="rot mono"><span>02 — <b>Qué hago</b></span><span>Kreatures · encargos</span></div>
+    <div class="obras">
+      <article class="obra">
+        <span class="num">01</span>
+        <h3>Herramientas a medida</h3>
+        <p>Software construido para el cuello de botella concreto de tu producción. Ni más ni menos.</p>
+      </article>
+      <article class="obra">
+        <span class="num">02</span>
+        <h3>IA aplicada</h3>
+        <p>Visión, datos y automatización con retorno medible. Sin cajas negras que te aten.</p>
+      </article>
+      <article class="obra">
+        <span class="num">03</span>
+        <h3>Videojuegos y XR</h3>
+        <p>Unity y tiempo real, del prototipo a la build. Jugable antes de prometer nada.</p>
+      </article>
+      <article class="obra">
+        <span class="num">04</span>
+        <h3>Arte procedural</h3>
+        <p>Variación generada por código: criaturas, terreno, pelo, animación.</p>
+      </article>
+      <article class="obra">
+        <span class="num">05</span>
+        <h3>Prototipado rápido</h3>
+        <p>Pruebas de concepto en días, no en trimestres. Mejor saberlo pronto.</p>
+      </article>
+      <article class="obra" style="padding:0">
+        <div class="hueco" style="border:0;min-height:100%">
+          <span>Imagen · pendiente</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="datos">
+    <div class="rot mono"><span>03 — <b>Datos</b></span><span>Sin adornos</span></div>
+    <div class="datos">
+      <dl>
+        <div class="fila"><dt>Base</dt><dd>Málaga · remoto o presencial</dd></div>
+        <div class="fila"><dt>Formación</dt><dd>Máster en inteligencia artificial · Máster en desarrollo de videojuegos · 42 Málaga</dd></div>
+        <div class="fila"><dt>Herramientas</dt><dd>Python · Unity · C# · GLSL · Godot · Flask · Docker</dd></div>
+        <div class="fila"><dt>Reconocimientos</dt><dd>Ideatón «Cultura en Código» CM Málaga 2026 · Hack for Good 2024 <em>(por confirmar contigo)</em></dd></div>
+        <div class="fila"><dt>Estado</dt><dd><b>Con trabajo fijo y abierto a colaboraciones</b> por Kreatures</dd></div>
+      </dl>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contacto">
+  <div class="contacto">
+    <a href="mailto:ancerlop@gmail.com">ancerlop@gmail.com</a>
+    <a href="tel:+34657219277">+34 657 219 277</a>
+  </div>
+  <div class="legal">
+    Andrés Cervantes López · Málaga<br>
+    github.com/ancerlop<br>
+    Currículum en PDF
+  </div>
+</footer>
+
+<p class="marca">Mockup 01 · editorial suizo</p>
+
+</body>
+</html>

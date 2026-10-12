@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>arnés de captura · ancerlop</title>
+<style>
+  html, body { margin: 0; background: #08080a; overflow: hidden; }
+  iframe { position: absolute; top: 0; left: 0; border: 0; visibility: hidden; }
+</style>
+</head>
+<body>
+<!--
+  Arnés para revisar el diseño con capturas de navegador headless.
+
+  Carga el sitio en un iframe del mismo origen, lo deja en un estado "asentado"
+  (todas las apariciones resueltas, la cuenta atrás fuera) y desplaza el scroll
+  a la franja exacta que se pida. Sirve para ver cualquier parte de la página
+  sin depender de anclas ni de capturas de página completa.
+
+  Uso, con el sitio servido en la raíz de este repo:
+
+    python -m http.server 8765
+    msedge --headless=new --window-size=1440,900 \
+      --screenshot=out.png \
+      "http://127.0.0.1:8765/tools/capture/harness.html?w=1440&h=900&y=3200"
+
+  Parámetros: w, h (viewport), y (desplazamiento), lang (es|en).
+-->
+<iframe id="f" src="/"></iframe>
+<script>
+  const p = new URLSearchParams(location.search);
+  const y = Number(p.get('y') || 0);
+  const h = Number(p.get('h') || 900);
+  const w = Number(p.get('w') || 1440);
+  const lang = p.get('lang');
+
+  const f = document.getElementById('f');
+  f.style.width = w + 'px';
+  f.style.height = h + 'px';
+
+  f.addEventListener('load', () => {
+    try {
+      // En headless el tiempo virtual no avanza las transiciones del
+      // compositor, así que las forzamos aquí.
+      const d = f.contentDocument;
+      const st = d.createElement('style');
+      st.textContent = [
+        '[data-reveal],.hero__slug,.lede,.cta,.hero__meta,.cue,.hero h1 .line__in' +
+          '{opacity:1!important;translate:none!important;clip-path:none!important}',
+        '.beam,.grain,.vignette{display:block!important;opacity:1!important}',
+        '.leader{display:none!important}',
+      ].join('');
+      d.head.appendChild(st);
+      d.body.classList.add('is-ready');
+      d.querySelectorAll('[data-reveal],.hero').forEach((el) => el.classList.add('is-in'));
+
+      if (lang) f.contentWindow.localStorage.setItem('ancerlop:lang', lang);
+      if (lang === 'en') d.getElementById('langBtn')?.click();
+      f.contentWindow.scrollTo(0, y);
+    } catch (e) { /* da igual: se captura lo que haya */ }
+    requestAnimationFrame(() => { f.style.visibility = 'visible'; });
+  });
+</script>
+</body>
+</html>

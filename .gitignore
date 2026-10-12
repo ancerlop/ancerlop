@@ -1,0 +1,12 @@
+# temporales de trabajo (arnés de capturas, perfiles de navegador, recortes)
+.tmp/
+
+# sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# editores
+.vscode/
+.idea/
+*.swp

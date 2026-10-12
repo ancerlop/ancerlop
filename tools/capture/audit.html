@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>auditoría de contraste · ancerlop</title>
+<style>
+  html, body { margin: 0; font: 12px/1.6 'Cascadia Mono', Consolas, monospace; background: #fff; }
+  #out { position: fixed; right: 0; top: 0; width: 620px; height: 100vh; z-index: 10; margin: 0;
+         padding: 10px; white-space: pre-wrap; overflow: auto; background: #fff; border-left: 1px solid #ccc; }
+  iframe { position: absolute; left: 0; top: 0; border: 0; }
+</style>
+</head>
+<body>
+<!--
+  Auditoría de contraste genérica: recorre TODOS los textos visibles de la página
+  que se le pase y mide el contraste real de cada uno contra su fondo efectivo
+  (subiendo por los ancestros hasta encontrar algo opaco y componiendo las
+  transparencias). No hay lista de selectores: vale para cualquier página.
+
+    python tools/capture/collect.py 8765
+    msedge --headless=new --remote-debugging-port=9370 --window-size=1900,1100 \
+      "http://127.0.0.1:8765/tools/capture/audit.html?url=/mockups/01-editorial.html"
+
+  El informe cae en .tmp/checks.txt. Lo que no se puede medir —texto sobre
+  degradados o sobre imágenes— se marca como REVISAR en lugar de inventarse un
+  número.
+-->
+<pre id="out">ejecutando…</pre>
+<iframe id="f"></iframe>
+<script>
+const lines = [];
+let fallos = 0;
+let revisar = 0;
+let ok = 0;
+
+function nota(texto) {
+  lines.push(texto);
+  try { fetch('/__results', { method: 'POST', body: texto, keepalive: true }).catch(() => {}); } catch (e) { /* nada */ }
+  document.getElementById('out').textContent = lines.join('\n');
+}
+
+function toRgb(str) {
+  const s = String(str).trim();
+  const modern = s.match(/^color\(\s*(?:srgb|display-p3)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+%?))?\s*\)$/i);
+  if (modern) {
+    const a = modern[4] === undefined ? 1 : (modern[4].endsWith('%') ? parseFloat(modern[4]) / 100 : Number(modern[4]));
+    return { r: +modern[1] * 255, g: +modern[2] * 255, b: +modern[3] * 255, a };
+  }
+  const fn = s.match(/^rgba?\(([^)]+)\)/i);
+  if (fn) {
+    const p = fn[1].split(/[\s,/]+/).filter(Boolean);
+    const n = (v) => (String(v).endsWith('%') ? parseFloat(v) * 2.55 : Number(v));
+    return { r: n(p[0]), g: n(p[1]), b: n(p[2]), a: p[3] === undefined ? 1 : (String(p[3]).endsWith('%') ? parseFloat(p[3]) / 100 : Number(p[3])) };
+  }
+  return null;
+}
+
+const over = (fg, bg) => ({
+  r: fg.r * fg.a + bg.r * (1 - fg.a),
+  g: fg.g * fg.a + bg.g * (1 - fg.a),
+  b: fg.b * fg.a + bg.b * (1 - fg.a),
+  a: 1,
+});
+
+function lum(c) {
+  const ch = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  return 0.2126 * ch(c.r) + 0.7152 * ch(c.g) + 0.0722 * ch(c.b);
+}
+
+const ratio = (a, b) => {
+  const la = lum(a), lb = lum(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+};
+
+const f = document.getElementById('f');
+const params = new URLSearchParams(location.search);
+const url = params.get('url') || '/';
+
+// El tamaño del marco se puede fijar por parámetro. Es la única forma de probar
+// un ancho de móvil de verdad: Windows impone un mínimo de ventana (~496 px), así
+// que --window-size=390 no da 390 px reales.
+f.style.width = (params.get('w') || 1280) + 'px';
+f.style.height = (params.get('h') || 1000) + 'px';
+
+f.src = url;
+f.addEventListener('load', () => {
+  setTimeout(() => {
+    const w = f.contentWindow;
+    const d = f.contentDocument;
+    nota('AUDITORÍA | ' + url + ' | marco ' + w.innerWidth + 'x' + w.innerHeight +
+         ' | ventana del arnés ' + window.innerWidth + 'x' + window.innerHeight);
+
+    /* --- desbordamiento horizontal: la prueba de fuego del responsive ---
+       Se compara el ancho del documento con el del marco y se listan los
+       elementos que se salen, ignorando los que están dentro de un contenedor
+       con scroll o recorte (una marquesina ancha es legítima). */
+    const vw = w.innerWidth;
+    const doc = d.documentElement.scrollWidth;
+    const culpables = [];
+    for (const el of d.querySelectorAll('body *')) {
+      const r = el.getBoundingClientRect();
+      if (r.width < 2 || r.right <= vw + 1) continue;
+      let n = el.parentElement;
+      let recortado = false;
+      while (n && n.nodeType === 1) {
+        const o = w.getComputedStyle(n);
+        if (/(hidden|auto|scroll)/.test(o.overflowX)) { recortado = true; break; }
+        n = n.parentElement;
+      }
+      if (recortado) continue;
+      const cls = el.className && typeof el.className === 'string'
+        ? '.' + el.className.split(/\s+/).filter(Boolean).slice(0, 2).join('.') : '';
+      culpables.push(el.tagName.toLowerCase() + cls + ' se sale hasta ' + Math.round(r.right) + 'px');
+    }
+    nota('ANCHO | documento ' + doc + 'px en ventana de ' + vw + 'px' +
+         (doc > vw + 1 ? '  ← DESBORDA' : '  ← correcto'));
+    [...new Set(culpables)].slice(0, 10).forEach((t) => nota('DESBORDA | ' + t));
+
+    // fondo efectivo. Devuelve {bg, aprox}; null si hay un degradado por medio
+    // del que no se puede saber el color real.
+    function fondo(el) {
+      let n = el;
+      let acc = null;
+      let aprox = false;
+      while (n && n.nodeType === 1) {
+        const cs = w.getComputedStyle(n);
+        const c = toRgb(cs.backgroundColor);
+        const imagen = cs.backgroundImage && cs.backgroundImage !== 'none';
+
+        if (c && c.a > 0) {
+          acc = acc ? over(acc, c) : c;
+          // si además hay un degradado encima, el color de fondo es sólo una
+          // aproximación: sirve para degradados suaves, y se avisa
+          if (acc.a >= 0.999) return { bg: acc, aprox: aprox || imagen };
+        }
+        if (imagen && (!acc || acc.a < 0.999)) return null;
+        if (imagen) aprox = true;
+
+        n = n.parentElement;
+      }
+      return { bg: acc || { r: 255, g: 255, b: 255, a: 1 }, aprox };
+    }
+
+    const vistos = new Set();
+    const malos = [];
+    const dudosos = [];
+    const aproximados = [];
+
+    for (const el of d.querySelectorAll('body *')) {
+      if (['SCRIPT', 'STYLE', 'NOSCRIPT', 'SVG', 'PATH', 'BR'].includes(el.tagName)) continue;
+
+      // sólo elementos con texto propio
+      const propio = [...el.childNodes]
+        .filter((n) => n.nodeType === 3 && n.textContent.trim().length > 1)
+        .map((n) => n.textContent.trim())
+        .join(' ');
+      if (!propio) continue;
+
+      const cs = w.getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) < 0.15) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < 2 || r.height < 2) continue;
+
+      const clave = el.tagName + '|' + propio.slice(0, 30);
+      if (vistos.has(clave)) continue;
+      vistos.add(clave);
+
+      const color = toRgb(cs.color);
+      if (!color || color.a < 0.1) continue;
+
+      const res = fondo(el);
+      const etiqueta = el.tagName.toLowerCase() + (el.className && typeof el.className === 'string'
+        ? '.' + el.className.split(/\s+/).filter(Boolean).slice(0, 2).join('.') : '');
+
+      if (!res) { dudosos.push(etiqueta + '  «' + propio.slice(0, 34) + '»'); continue; }
+      const bg = res.bg;
+
+      const solido = color.a < 1 ? over(color, bg) : color;
+      const size = parseFloat(cs.fontSize);
+      const bold = parseInt(cs.fontWeight, 10) >= 700;
+      const grande = size >= 24 || (bold && size >= 18.66);
+      const necesario = grande ? 3 : 4.5;
+      const cr = ratio(solido, bg);
+
+      if (cr < necesario) {
+        fallos++;
+        malos.push(
+          'FALLA | ' + etiqueta + ' | ' + cr.toFixed(2) + ':1 (mínimo ' + necesario + ', ' + size.toFixed(1) + 'px)' +
+          ' | «' + propio.slice(0, 40) + '»'
+        );
+      } else ok++;
+      if (res.aprox) aproximados.push(etiqueta + '  ' + cr.toFixed(2) + ':1  «' + propio.slice(0, 30) + '»');
+    }
+
+    malos.sort((a, b) => parseFloat(a.split('|')[2]) - parseFloat(b.split('|')[2]));
+    malos.forEach(nota);
+    dudosos.forEach((t) => { revisar++; nota('REVISAR | ' + t + ' | texto sobre degradado o imagen'); });
+    if (aproximados.length) {
+      nota('APROXIMADO | ' + aproximados.length + ' textos sobre fondo con degradado suave, medidos contra el color base');
+    }
+    nota('RESULTADO | ' + ok + ' correctos, ' + fallos + ' por debajo del mínimo, ' + revisar + ' sin poder medir');
+  }, 900);
+});
+</script>
+</body>
+</html>

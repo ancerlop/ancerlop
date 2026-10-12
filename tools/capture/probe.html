@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>sonda de medidas · ancerlop</title>
+<style>
+  html, body { margin: 0; font: 12px monospace; }
+  #out { white-space: pre-wrap; margin: 0; padding: 8px; }
+  iframe { position: absolute; left: 0; top: 0; border: 0; }
+</style>
+</head>
+<body>
+<!--
+  Sonda: mide la altura real del documento y el desplazamiento de cada sección
+  dentro de un viewport concreto, para luego capturar franjas exactas con
+  harness.html.
+
+    msedge --headless=new --dump-dom \
+      --virtual-time-budget=6000 \
+      "http://127.0.0.1:8765/tools/capture/probe.html?w=1440&h=900"
+-->
+<pre id="out">midiendo…</pre>
+<iframe id="f" src="/"></iframe>
+<script>
+  const f = document.getElementById('f');
+  const p = new URLSearchParams(location.search);
+  f.style.width = (p.get('w') || 1280) + 'px';
+  f.style.height = (p.get('h') || 820) + 'px';
+
+  f.addEventListener('load', () => {
+    setTimeout(() => {
+      try {
+        const d = f.contentDocument;
+        const w = f.contentWindow;
+        const rows = [...d.querySelectorAll('main .world, footer')].map((el) => ({
+          id: el.id || el.tagName.toLowerCase(),
+          top: Math.round(el.getBoundingClientRect().top + w.scrollY),
+          height: Math.round(el.getBoundingClientRect().height),
+        }));
+        document.getElementById('out').textContent =
+          'DOC_HEIGHT=' + d.documentElement.scrollHeight + '\n' + JSON.stringify(rows, null, 1);
+      } catch (e) {
+        document.getElementById('out').textContent = 'ERROR ' + e;
+      }
+    }, 600);
+  });
+</script>
+</body>
+</html>

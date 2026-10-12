@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mockups · ancerlop</title>
+<style>
+  :root{
+    --bg:#111214; --panel:#181a1d; --line:#2a2d31; --fg:#f2f2f0; --dim:#8d9196;
+    --accent:#ffb454; --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{display:flex;background:var(--bg);color:var(--fg);font-family:var(--sans);overflow:hidden}
+  a{color:inherit}
+
+  aside{width:310px;flex:none;border-right:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto}
+  .head{padding:20px 20px 16px;border-bottom:1px solid var(--line)}
+  .head h1{font-size:15px;margin:0 0 6px;letter-spacing:-.01em}
+  .head p{margin:0;font-family:var(--mono);font-size:11px;line-height:1.65;color:var(--dim)}
+  .mezclador{display:block;margin-top:12px;padding:10px 12px;border-radius:8px;text-decoration:none;
+             background:linear-gradient(135deg,#c8f751,#7dfba0);color:#141610;font-size:12.5px;font-weight:500}
+  .mezclador:hover{filter:brightness(1.06)}
+
+  nav{padding:8px}
+  button.dir{
+    display:block;width:100%;text-align:left;background:none;border:0;color:inherit;
+    padding:12px 12px 13px;border-radius:8px;cursor:pointer;font:inherit;
+  }
+  button.dir:hover{background:var(--panel)}
+  button.dir[aria-current="true"]{background:var(--panel);box-shadow:inset 2px 0 0 var(--accent)}
+  .n{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:.14em}
+  .t{display:block;font-weight:600;font-size:14px;margin:3px 0 4px}
+  .d{display:block;font-size:12px;line-height:1.5;color:var(--dim)}
+
+  .foot{margin-top:auto;padding:14px 20px 18px;border-top:1px solid var(--line);
+        font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--dim)}
+  .foot a{color:var(--accent);text-decoration:none}
+  .foot a:hover{text-decoration:underline}
+
+  main{flex:1;min-width:0;position:relative;background:#000}
+  iframe{width:100%;height:100%;border:0;display:block;background:#fff}
+
+  @media (max-width:760px){
+    body{flex-direction:column;overflow:auto}
+    aside{width:100%;border-right:0;border-bottom:1px solid var(--line);max-height:44vh}
+    main{height:56vh;flex:none}
+  }
+</style>
+</head>
+<body>
+
+<aside>
+  <div class="head">
+    <h1>Cinco direcciones</h1>
+    <p>Ninguna es una variación de color de otra: cambian tipografía, estructura y tono. Mira cuál te dice algo y la reconstruyo entera.</p>
+    <a class="mezclador" href="mezclador.html">O prueba el <b>mezclador</b> →</a>
+  </div>
+
+  <nav id="lista" aria-label="Direcciones"></nav>
+
+  <div class="foot">
+    Sin Goya en ninguna.<br>
+    Koniec Films: empiezas <strong>el 13 de octubre de 2026</strong>.<br>
+    <a href="#" id="abrir" target="_blank" rel="noopener">abrir esta en una pestaña →</a>
+  </div>
+</aside>
+
+<main><iframe id="vista" title="Mockup" src="01-editorial.html"></iframe></main>
+
+<script>
+  const DIRECCIONES = [
+    { f: '01-editorial.html',  n: '01', t: 'Editorial suizo',       d: 'Rejilla rígida, tipografía enorme, líneas finas. Frío y preciso. Dice: «sé exactamente lo que hago».' },
+    { f: '02-producto.html',   n: '02', t: 'Estudio tecnológico',   d: 'Claro, aireado, tarjetas suaves y acento en degradado. Familiar y fácil de contratar. El más comercial.' },
+    { f: '03-estudio.html',    n: '03', t: 'Estudio creativo',      d: 'Color a bloques, tipografía con carácter, movimiento. Dice: «hacemos cosas divertidas y sabemos hacerlas».' },
+    { f: '04-terminal.html',   n: '04', t: 'Terminal',              d: 'Todo monoespaciado, verde fósforo, tono de ingeniero. Dice: «soy técnico de verdad». El más de nicho.' },
+    { f: '05-documental.html', n: '05', t: 'Documental',            d: 'Papel, serif, márgenes enormes, casi silencio. Dice: «cine y artesanía, mirada lenta».' }
+  ];
+
+  const lista = document.getElementById('lista');
+  const vista = document.getElementById('vista');
+  const abrir = document.getElementById('abrir');
+
+  DIRECCIONES.forEach((x, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'dir';
+    b.innerHTML = `<span class="n">DIRECCIÓN ${x.n}</span><span class="t">${x.t}</span><span class="d">${x.d}</span>`;
+    b.addEventListener('click', () => elegir(i));
+    lista.appendChild(b);
+  });
+
+  function elegir(i) {
+    const x = DIRECCIONES[i];
+    vista.src = x.f;
+    abrir.href = x.f;
+    [...lista.children].forEach((b, j) => b.setAttribute('aria-current', String(i === j)));
+    try { history.replaceState(null, '', '#' + x.f); } catch (e) { /* file:// */ }
+  }
+
+  const inicial = DIRECCIONES.findIndex((x) => '#' + x.f === location.hash);
+  elegir(inicial < 0 ? 0 : inicial);
+</script>
+</body>
+</html>

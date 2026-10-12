@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mockup 05 · Documental — ancerlop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --papel:#ebe7de; --papel2:#e2ddd1; --tinta:#15140f; --dim:#5c594f; --tera:#9c4a2e;
+    --serif:'Newsreader',Georgia,serif; --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+    --g:clamp(22px,6vw,110px);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--papel);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.7;
+       -webkit-font-smoothing:antialiased}
+  h1,h2,h3,p,figure{margin:0}
+  a{color:inherit}
+  .mono{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+
+  /* ---------- cabecera ---------- */
+  header{padding:clamp(18px,3vw,30px) var(--g);display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+  .firma{font-family:var(--serif);font-size:19px;font-weight:500;letter-spacing:-.01em}
+  header nav{display:flex;gap:clamp(12px,2vw,26px)}
+  header nav a{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+               color:var(--dim);text-decoration:none}
+  header nav a:hover{color:var(--tinta)}
+
+  /* ---------- portada ---------- */
+  .hero{padding:clamp(40px,11vh,130px) var(--g) clamp(30px,8vh,90px)}
+  .hero .mono{margin-bottom:clamp(24px,5vh,52px)}
+  .hero h1{font-family:var(--serif);font-weight:300;font-size:clamp(28px,4.4vw,58px);line-height:1.24;
+           letter-spacing:-.015em;max-width:min(26ch,100%)}
+  .hero h1 i{font-style:italic;color:var(--tera)}
+  .hero .firma2{margin-top:clamp(28px,6vh,54px);display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+  .hero .firma2 b{font-family:var(--serif);font-weight:500;font-size:19px}
+  .hero .firma2 span{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+
+  /* ---------- imagen a sangre ---------- */
+  figure.sangre{margin:clamp(20px,5vh,58px) 0 0}
+  .hueco{background:var(--papel2);min-height:clamp(240px,52vh,520px);display:grid;place-items:center;text-align:center;
+         padding:24px;
+         background-image:repeating-linear-gradient(45deg,transparent 0 14px,rgba(21,20,15,.035) 14px 15px)}
+  .hueco span{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  figure figcaption{padding:14px var(--g) 0;display:flex;gap:14px;justify-content:space-between;flex-wrap:wrap}
+
+  /* ---------- texto ---------- */
+  .texto{padding:clamp(44px,11vh,120px) var(--g);display:grid;gap:clamp(26px,5vh,52px)}
+  @media(min-width:860px){.texto{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px,8vw,110px)}}
+  .texto article{max-width:min(52ch,100%)}
+  .texto .mono{margin-bottom:14px}
+  .texto p + p{margin-top:16px}
+  .texto p.grande{font-family:var(--serif);font-size:clamp(19px,2.2vw,25px);line-height:1.5;font-weight:300;color:#26241c}
+  .texto em{font-style:italic}
+  .texto strong{font-weight:500}
+
+  /* ---------- tres columnas ---------- */
+  .tres{padding:0 var(--g) clamp(44px,10vh,110px);display:grid;gap:clamp(24px,4vw,48px)}
+  @media(min-width:760px){.tres{grid-template-columns:repeat(3,1fr)}}
+  .tres h3{font-family:var(--serif);font-weight:500;font-size:19px;margin-bottom:8px;letter-spacing:-.01em}
+  .tres p{font-size:14.5px;color:#3c3a31}
+  .tres .mono{margin-bottom:12px}
+
+  /* ---------- cierre ---------- */
+  .cierre{border-top:1px solid rgba(21,20,15,.18);margin:0 var(--g);padding:clamp(30px,7vh,64px) 0 clamp(40px,9vh,80px);
+          display:grid;gap:20px}
+  @media(min-width:800px){.cierre{grid-template-columns:1.2fr 1fr;align-items:end}}
+  .cierre h2{font-family:var(--serif);font-weight:300;font-size:clamp(24px,3.4vw,40px);line-height:1.2;letter-spacing:-.015em}
+  .cierre h2 i{font-style:italic;color:var(--tera)}
+  .vias{display:grid;gap:7px;font-size:16px}
+  .vias a{text-decoration:none;border-bottom:1px solid rgba(21,20,15,.28);justify-self:start;padding-bottom:1px}
+  .vias a:hover{border-color:var(--tera);color:var(--tera)}
+
+  footer{padding:0 var(--g) clamp(30px,6vh,54px);display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+
+  .marca{position:fixed;right:10px;bottom:10px;z-index:20;font-family:var(--mono);font-size:10px;
+         letter-spacing:.14em;text-transform:uppercase;background:var(--tinta);color:var(--papel);padding:5px 9px;opacity:.85}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="firma">Andrés Cervantes López</span>
+  <nav>
+    <a href="#ahora">Ahora</a>
+    <a href="#oficio">Oficio</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <p class="mono">Málaga · 2026</p>
+  <h1>
+    Entreno inteligencias y construyo mundos.
+    <i>Desde el 13 de octubre dirijo técnicamente en cine de animación</i>,
+    después de años en un laboratorio de inteligencia artificial.
+  </h1>
+  <div class="firma2">
+    <b>Director Técnico</b>
+    <span>Koniec Films</span>
+    <span>·</span>
+    <span>Kreatures · PTA Málaga</span>
+  </div>
+</section>
+
+<figure class="sangre">
+  <div class="hueco"><span>Imagen a sangre · pendiente de material</span></div>
+  <figcaption>
+    <span class="mono">Fotograma o making-of · 2.39:1</span>
+    <span class="mono">Aquí irá vuestro material</span>
+  </figcaption>
+</figure>
+
+<section class="texto" id="ahora">
+  <article>
+    <p class="mono">01 — Ahora</p>
+    <p class="grande">
+      Empiezo el <strong>13 de octubre de 2026</strong> como Director Técnico en <strong>Koniec Films</strong>.
+      Decidir cómo se construye lo que luego se ve en pantalla: pipeline, herramientas, datos de
+      producción y equipos.
+    </p>
+    <p>
+      Todo lo de esta etapa está por construir, y esa es justo la parte interesante. Iré contando
+      aquí lo que se pueda contar.
+    </p>
+  </article>
+
+  <article>
+    <p class="mono">02 — Antes</p>
+    <p class="grande">
+      Vengo de un laboratorio de inteligencia artificial: modelos, datos y despliegue en producción.
+    </p>
+    <p>
+      Ese vicio no se pierde. La manía de medir, de dudar del resultado y de dejar la pérdida a la
+      vista es la misma que aplico ahora al cine: <em>una herramienta sólo sirve si alguien puede
+      explicar qué hace y cuánto se equivoca</em>.
+    </p>
+  </article>
+</section>
+
+<section class="tres" id="oficio">
+  <article>
+    <p class="mono">Kreatures</p>
+    <h3>Estudio propio</h3>
+    <p>
+      Outsourcing creativo-tecnológico en el Polo de Contenidos Digitales de Málaga. Entramos donde
+      un proyecto necesita músculo técnico y criterio creativo a la vez.
+    </p>
+  </article>
+  <article>
+    <p class="mono">Oficio</p>
+    <h3>Qué hago</h3>
+    <p>
+      Herramientas a medida, IA aplicada, videojuegos y XR, arte procedural y prototipado rápido.
+      Del prototipo a la build, sin cajas negras.
+    </p>
+  </article>
+  <article>
+    <p class="mono">Formación</p>
+    <h3>De dónde vengo</h3>
+    <p>
+      Dos másteres —inteligencia artificial y desarrollo de videojuegos—, 42 Málaga y una década
+      larga enseñando y dando soporte técnico antes de todo esto.
+    </p>
+  </article>
+</section>
+
+<section class="cierre" id="contacto">
+  <h2>Si tienes algo entre manos que <i>tiene que salir bien</i>, hablemos.</h2>
+  <div class="vias">
+    <a href="mailto:ancerlop@gmail.com">ancerlop@gmail.com</a>
+    <a href="tel:+34657219277">+34 657 219 277</a>
+    <a href="#">github.com/ancerlop</a>
+    <span class="mono">Málaga · remoto o presencial · currículum en PDF</span>
+  </div>
+</section>
+
+<footer>
+  <span class="mono">© 2026 Andrés Cervantes López</span>
+  <span class="mono">Kreatures · Polo de Contenidos Digitales · PTA Málaga</span>
+</footer>
+
+<p class="marca">Mockup 05 · documental</p>
+
+</body>
+</html>

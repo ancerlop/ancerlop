@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>comprobaciones · ancerlop</title>
+<style>
+  html, body { margin: 0; font: 12px/1.55 monospace; background: #fff; }
+  /* el panel va a la derecha y el iframe a la izquierda, sin solaparse: si el
+     panel tapa el iframe, el navegador puede dejar de dibujarlo (detección de
+     oclusión) y con él se paran los requestAnimationFrame del sitio */
+  #out {
+    position: fixed; right: 0; top: 0; width: 560px; height: 100vh; z-index: 10;
+    margin: 0; padding: 8px; white-space: pre-wrap; background: #fff; overflow: auto;
+    border-left: 1px solid #ccc;
+  }
+  iframe { position: absolute; left: 0; top: 0; width: 1440px; height: 900px; border: 0; }
+</style>
+</head>
+<body>
+<!--
+  Banco de comprobaciones. Carga el sitio en un iframe del mismo origen, lo
+  maneja de verdad (pulsa botones, mueve el puntero, cambia de idioma), mide el
+  contraste real de los textos y revisa la estructura del documento.
+
+  Necesita el colector, que sirve el sitio y guarda el informe:
+
+    python tools/capture/collect.py 8765
+    msedge --headless=new --disable-gpu --hide-scrollbars \
+      --user-data-dir=.tmp/edge --virtual-time-budget=90000 --window-size=1600,1250 \
+      --screenshot=.tmp/report.png \
+      "http://127.0.0.1:8765/tools/capture/checks.html"
+
+  El informe queda en .tmp/checks.txt, línea a línea y en el momento en que se
+  produce: si algo se cuelga, lo anterior ya está guardado.
+
+  Las esperas son por sondeo con temporizadores, nunca contando fotogramas: con
+  --virtual-time-budget los requestAnimationFrame no avanzan a demanda y contar
+  frames da falsos negativos.
+-->
+<pre id="out">ejecutando…</pre>
+<!-- El sandbox impide que el mailto del formulario navegue el marco y bloquee el
+     renderer; allow-same-origin + allow-scripts mantienen el acceso al DOM. -->
+<iframe id="f" src="/" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+<script>
+const lines = [];
+let failures = 0;
+
+function check(name, ok, detail) {
+  if (!ok) failures++;
+  const line = (ok ? 'PASS' : 'FAIL') + ' | ' + name + (detail ? ' | ' + detail : '');
+  lines.push(line);
+
+  // tres canales: colector (fiable), consola y panel
+  try {
+    fetch('/__results', { method: 'POST', body: line, keepalive: true }).catch(() => {});
+  } catch (e) { /* sin colector: quedan la consola y el panel */ }
+  console.log('CHECK|' + line);
+
+  document.getElementById('out').textContent = lines.join('\n');
+}
+
+/* Espera híbrida: un fotograma real o el temporizador, lo que llegue antes.
+   Con --virtual-time-budget los temporizadores se adelantan al instante pero los
+   requestAnimationFrame no, así que esperar sólo con setTimeout deja la página
+   sin dibujar y todas las comprobaciones que dependen de un frame (revelados,
+   navegación, entrenamiento) dan falsos negativos. Pidiendo un frame en cada
+   espera, el renderer avanza. Se cuentan ambos casos: si los fotogramas dejan
+   de llegar, el informe lo dice en lugar de fallar en silencio. */
+let framesReales = 0;
+let tiemposAgotados = 0;
+
+const sleep = (ms) => new Promise((resolve) => {
+  let done = false;
+  const viaFrame = () => { if (!done) { done = true; framesReales++; resolve(); } };
+  const viaTimer = () => { if (!done) { done = true; tiemposAgotados++; resolve(); } };
+  try { f.contentWindow.requestAnimationFrame(viaFrame); } catch (e) { /* aún sin ventana */ }
+  setTimeout(viaTimer, ms);
+});
+
+/** Manda una línea al colector sin contarla como comprobación. */
+function note(text) {
+  try { fetch('/__results', { method: 'POST', body: text, keepalive: true }).catch(() => {}); } catch (e) { /* nada */ }
+}
+
+/** Sondea hasta que se cumpla la condición. Devuelve si lo consiguió. */
+async function waitFor(fn, timeout = 12000, step = 40) {
+  const t0 = Date.now();
+  for (;;) {
+    try { if (fn()) return true; } catch (e) { /* aún no está listo */ }
+    if (Date.now() - t0 >= timeout) return false;
+    await sleep(step);
+  }
+}
+
+const f = document.getElementById('f');
+const W = () => f.contentWindow;
+const D = () => f.contentDocument;
+
+/* ---------------------------------------------------------------- color --- */
+/* Chromium serializa los resultados de color-mix() como color(srgb r g b / a)
+   con componentes 0..1, no como rgb() 0..255. Hay que aceptar los dos formatos
+   o el cálculo de contraste devuelve cifras absurdas. */
+function toRgb(str) {
+  const s = String(str).trim();
+
+  const modern = s.match(/^color\(\s*(?:srgb|display-p3)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+%?))?\s*\)$/i);
+  if (modern) {
+    const alpha = modern[4] === undefined ? 1
+      : (modern[4].endsWith('%') ? parseFloat(modern[4]) / 100 : Number(modern[4]));
+    return { r: +modern[1] * 255, g: +modern[2] * 255, b: +modern[3] * 255, a: alpha };
+  }
+
+  const fn = s.match(/^rgba?\(([^)]+)\)/i);
+  if (fn) {
+    const parts = fn[1].split(/[\s,/]+/).filter(Boolean);
+    const num = (v) => (String(v).endsWith('%') ? parseFloat(v) * 2.55 : Number(v));
+    return {
+      r: num(parts[0]), g: num(parts[1]), b: num(parts[2]),
+      a: parts[3] === undefined ? 1 : (String(parts[3]).endsWith('%') ? parseFloat(parts[3]) / 100 : Number(parts[3])),
+    };
+  }
+
+  return null;
+}
+
+function over(fg, bg) {
+  return {
+    r: fg.r * fg.a + bg.r * (1 - fg.a),
+    g: fg.g * fg.a + bg.g * (1 - fg.a),
+    b: fg.b * fg.a + bg.b * (1 - fg.a),
+    a: 1,
+  };
+}
+
+function lum(c) {
+  const ch = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  return 0.2126 * ch(c.r) + 0.7152 * ch(c.g) + 0.0722 * ch(c.b);
+}
+
+function ratio(a, b) {
+  const la = lum(a);
+  const lb = lum(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+
+/** Fondo efectivo: sube por los ancestros hasta encontrar algo opaco. */
+function backdrop(el) {
+  let n = el;
+  let acc = null;
+  while (n && n.nodeType === 1) {
+    const c = toRgb(W().getComputedStyle(n).backgroundColor);
+    if (c && c.a > 0) acc = acc ? over(acc, c) : c;
+    if (acc && acc.a >= 0.999) return acc;
+    n = n.parentElement;
+  }
+  return acc || { r: 255, g: 255, b: 255, a: 1 };
+}
+
+function contrastOf(el) {
+  const cs = W().getComputedStyle(el);
+  const fg = toRgb(cs.color);
+  const bg = backdrop(el);
+  const solid = fg.a < 1 ? over(fg, bg) : fg;
+  const size = parseFloat(cs.fontSize);
+  const bold = parseInt(cs.fontWeight, 10) >= 700;
+  const large = size >= 24 || (bold && size >= 18.66);
+  return { ratio: ratio(solid, bg), size, large };
+}
+
+function audit(label, selector, min) {
+  const el = D().querySelector(selector);
+  if (!el) { check('contraste ' + label, false, 'no se encuentra ' + selector); return; }
+  const c = contrastOf(el);
+  const need = min || (c.large ? 3 : 4.5);
+  check(
+    'contraste ' + label,
+    c.ratio >= need,
+    c.ratio.toFixed(2) + ':1 (mínimo ' + need + (c.large ? ', texto grande, ' : ', ') + c.size.toFixed(1) + 'px)'
+  );
+}
+
+/* ------------------------------------------------------------------ run --- */
+f.addEventListener('load', async () => {
+  const w = W();
+  const d = D();
+
+  // Los errores del sitio se recogen en el informe: si un callback del bucle de
+  // animación revienta, el ticker lo retira y las animaciones se congelan sin
+  // decir nada. Sin este canal, eso se ve como un fallo misterioso de timing.
+  try {
+    w.addEventListener('error', (e) => note('ERROR-JS | ' + (e.message || '') + ' @ ' + (e.filename || '?') + ':' + (e.lineno || 0)));
+    w.addEventListener('unhandledrejection', (e) => note('ERROR-JS | promesa rechazada: ' + e.reason));
+    const original = w.console.error;
+    w.console.error = (...args) => {
+      note('CONSOLA | ' + args.map((a) => (a && a.message) || String(a)).join(' '));
+      original.apply(w.console, args);
+    };
+  } catch (e) { /* sin canal de errores seguimos */ }
+
+  try {
+    /* 1. arranque */
+    check('arranque · body.is-ready', await waitFor(() => d.body.classList.contains('is-ready'), 12000));
+    check('arranque · cuenta atrás retirada del DOM', await waitFor(() => !d.getElementById('leader'), 6000));
+    check('arranque · portada revelada', await waitFor(() => d.querySelector('.hero').classList.contains('is-in'), 12000));
+    check('arranque · cursor espera al ratón', !d.documentElement.classList.contains('cursor-on'));
+
+    /* 2. laboratorio — va justo detrás del arranque a propósito: estas pruebas
+       necesitan que el renderer siga produciendo fotogramas y el presupuesto de
+       tiempo virtual se agota conforme avanza el resto de la batería */
+    const steps = d.getElementById('outSteps');
+    const toggle = d.getElementById('descentToggle');
+    const lr = d.getElementById('lr');
+    const badge = d.getElementById('descentBadge');
+    const canvas = d.getElementById('descentStage');
+
+    check('laboratorio · arranca en un ritmo estable',
+      Number(lr.value) > 0 && Number(lr.value) < 82,
+      'valor ' + lr.value + ' (inestable por encima de ~82)');
+
+    // Con movimiento reducido el laboratorio arranca en pausa: se anota ese
+    // estado inicial y se reanuda, para que el resto de pruebas valgan en las
+    // dos ramas sin tener que duplicarlas.
+    const arrancaPausado = toggle.getAttribute('aria-pressed') === 'false';
+    if (arrancaPausado) { toggle.click(); await sleep(200); }
+
+    /* la copia dice «si se dispara, el ritmo es demasiado alto — pruébalo»:
+       hay que poder llegar a ese estado desde el deslizador */
+    lr.value = String(lr.max);
+    lr.dispatchEvent(new w.Event('input', { bubbles: true }));
+    const divergio = await waitFor(() => /Divergió|Diverged/.test(badge.textContent), 10000);
+    check('laboratorio · el ritmo máximo descontrola el modelo', divergio, badge.textContent.trim());
+    check('laboratorio · divergir deja el entrenamiento en pausa', /Reanudar|Resume/.test(toggle.textContent), toggle.textContent);
+
+    d.getElementById('descentReset').click();
+    lr.value = '6';
+    lr.dispatchEvent(new w.Event('input', { bubbles: true }));
+    await sleep(150);
+    check('laboratorio · reiniciar devuelve el paso a cero',
+      await waitFor(() => Number(steps.textContent) < 5, 4000), steps.textContent + ' pasos');
+
+    // Con movimiento reducido el reinicio deja el laboratorio en pausa, que es
+    // lo correcto: nada debe moverse solo. Se reanuda para poder comprobar el
+    // entrenamiento sin duplicar toda la batería.
+    if (toggle.getAttribute('aria-pressed') === 'false') { toggle.click(); await sleep(200); }
+
+    const s0 = Number(steps.textContent);
+    const avanza = await waitFor(() => Number(steps.textContent) > s0, 12000);
+    check('laboratorio · entrena solo', avanza, s0 + ' → ' + steps.textContent + ' pasos');
+
+    toggle.click();
+    await sleep(200);
+    const s2 = Number(steps.textContent);
+    const avanzoPausado = await waitFor(() => Number(steps.textContent) > s2, 3000);
+    check('laboratorio · la pausa detiene el entrenamiento', !avanzoPausado, 'paso ' + s2 + ' → ' + steps.textContent);
+    check('laboratorio · etiqueta al pausar', /Reanudar|Resume/.test(toggle.textContent), toggle.textContent);
+
+    toggle.click();
+    await sleep(200);
+    check('laboratorio · etiqueta al reanudar', /Pausar|Pause/.test(toggle.textContent), toggle.textContent);
+
+    const r = canvas.getBoundingClientRect();
+    const ev = (type, x, y) => canvas.dispatchEvent(new w.PointerEvent(type, {
+      bubbles: true, cancelable: true, pointerId: 1, pointerType: 'mouse', clientX: x, clientY: y,
+    }));
+
+    ev('pointerdown', r.left + 60, r.top + 60);
+    ev('pointerup', r.left + 60, r.top + 60);
+    await sleep(150);
+    const live1 = d.getElementById('descentLive').textContent;
+    check('laboratorio · el clic añade un punto', /Punto añadido|Point added/.test(live1), live1.slice(0, 46));
+
+    ev('pointerdown', r.left + 60, r.top + 60);
+    ev('pointermove', r.left + 150, r.top + 140);
+    ev('pointerup', r.left + 150, r.top + 140);
+    await sleep(150);
+    check('laboratorio · arrastrar no añade otro punto', d.getElementById('descentLive').textContent === live1,
+      d.getElementById('descentLive').textContent.slice(0, 46));
+
+    /* 3. estructura */
+    check('estructura · un solo h1', d.querySelectorAll('h1').length === 1, d.querySelectorAll('h1').length + ' encontrados');
+    const sinAlt = [...d.querySelectorAll('img')].filter((i) => !i.hasAttribute('alt'));
+    check('estructura · imágenes con alt', sinAlt.length === 0, sinAlt.length + ' sin alt');
+    const sinEtiqueta = [...d.querySelectorAll('input, textarea')].filter(
+      (i) => !d.querySelector('label[for="' + i.id + '"]') && !i.getAttribute('aria-label'));
+    check('estructura · campos con etiqueta', sinEtiqueta.length === 0, sinEtiqueta.length + ' sin etiqueta');
+    check('estructura · enlace de salto', !!d.querySelector('.skip[href="#main"]'));
+    check('estructura · regiones con nombre', !!d.getElementById('main') && d.querySelectorAll('nav[aria-label]').length >= 1);
+
+    /* 4. sin JavaScript. El contrato real es que el CSS sólo oculta cosas bajo
+       `html.js`, así que se comprueba quitando esa clase: si algo se queda
+       oculto, es que dependía del script para verse. */
+    const raiz = d.documentElement;
+    raiz.classList.remove('js');
+    raiz.classList.add('no-js');
+    await sleep(200);
+    const seVe = (sel) => {
+      const el = d.querySelector(sel);
+      const cs = w.getComputedStyle(el);
+      return cs.opacity === '1' && cs.visibility !== 'hidden' && cs.display !== 'none';
+    };
+    check('sin JS · el titular se ve', seVe('#heroTitle .line__in'));
+    check('sin JS · la entradilla se ve', seVe('.hero .lede'));
+    check('sin JS · los botones se ven', seVe('.hero .cta .btn'));
+    check('sin JS · ningún bloque con data-reveal queda oculto',
+      [...d.querySelectorAll('[data-reveal]')].every((el) => {
+        const cs = w.getComputedStyle(el);
+        return cs.opacity === '1' && cs.clipPath === 'none';
+      }));
+    check('sin JS · el contenedor del vivero sigue en el documento', !!d.getElementById('viveroGrid'));
+    check('sin JS · el contenedor del laboratorio sigue en el documento', !!d.getElementById('labDescent'));
+    raiz.classList.add('js');
+    raiz.classList.remove('no-js');
+    await sleep(200);
+
+    /* 3. idioma */
+    if (d.documentElement.lang === 'en') { d.getElementById('langBtn').click(); await sleep(200); }
+    const h1es = d.querySelector('#heroTitle .line__in').textContent.trim();
+    d.getElementById('langBtn').click();
+    await sleep(250);
+    const h1en = d.querySelector('#heroTitle .line__in').textContent.trim();
+    check('idioma · cambia a inglés', d.documentElement.lang === 'en' && /^I train/.test(h1en), h1en);
+    const leads = d.querySelector('.hero .lede').textContent;
+    check('idioma · entradilla traducida', /Technical Director at Koniec/.test(leads));
+    d.getElementById('langBtn').click();
+    await sleep(250);
+    check('idioma · vuelve a castellano',
+      d.documentElement.lang === 'es' && d.querySelector('#heroTitle .line__in').textContent.trim() === h1es);
+
+    /* 4. grano */
+    const antes = d.body.dataset.grain;
+    d.getElementById('grainBtn').click();
+    check('grano · interruptor', antes !== d.body.dataset.grain && d.body.dataset.grain === 'off', antes + ' → ' + d.body.dataset.grain);
+    check('grano · aria-pressed coherente', d.getElementById('grainBtn').getAttribute('aria-pressed') === 'false');
+    d.getElementById('grainBtn').click();
+    check('grano · vuelve a encenderse', d.body.dataset.grain === 'on' && d.getElementById('grainBtn').getAttribute('aria-pressed') === 'true');
+
+    /* 5. menú móvil */
+    d.getElementById('menuBtn').click();
+    check('menú · abre', d.body.classList.contains('nav-open') && d.getElementById('menuBtn').getAttribute('aria-expanded') === 'true');
+    d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape' }));
+    check('menú · cierra con Escape', !d.body.classList.contains('nav-open') && d.getElementById('menuBtn').getAttribute('aria-expanded') === 'false');
+
+    /* 7. vivero */
+    const critters = [...d.querySelectorAll('.critter')];
+    check('vivero · seis criaturas', critters.length === 6, critters.length + ' criaturas');
+    check('vivero · cada una con svg y semilla', critters.every((c) => c.querySelector('svg') && c.querySelector('.critter__seed')));
+    check('vivero · son botones', critters.every((c) => c.tagName === 'BUTTON' && c.getAttribute('aria-label')));
+    const semilla0 = critters[0].querySelector('.critter__seed').textContent;
+    critters[0].click();
+    await sleep(150);
+    const semilla1 = critters[0].querySelector('.critter__seed').textContent;
+    check('vivero · evolucionar cambia la semilla', semilla0 !== semilla1, semilla0 + ' → ' + semilla1);
+    const camada1 = critters.map((c) => c.querySelector('.critter__seed').textContent);
+    d.getElementById('viveroBtn').click();
+    await sleep(150);
+    const camada2 = critters.map((c) => c.querySelector('.critter__seed').textContent);
+    check('vivero · nueva camada renueva las seis', camada1.every((v, i) => v !== camada2[i]), camada2.join(' '));
+
+    /* 8. navegación. El desplazamiento es suave, así que hay que esperar a que
+       llegue de verdad: comprobar en cuanto scrollY deja de ser 0 mide el estado
+       a mitad de la animación y da falsos negativos. */
+    w.scrollTo(0, 3200);
+    const llego = await waitFor(() => Math.abs(w.scrollY - 3200) < 40, 8000);
+    check('navegación · el desplazamiento llega al destino', llego,
+      'scrollY=' + Math.round(w.scrollY) + ' de ' + (d.documentElement.scrollHeight - w.innerHeight) + ' disponibles');
+    // con movimiento reducido el salto es instantáneo, así que el propio evento
+    // de scroll y su fotograma pueden llegar después: hay que esperarlos
+    const barra = await waitFor(() => d.getElementById('timecode').textContent !== '00:00:00:00', 6000);
+    check('navegación · la barra reacciona al desplazamiento', barra, d.getElementById('timecode').textContent);
+    const tc = d.getElementById('timecode').textContent;
+    check('navegación · timecode ligado al scroll', /^\d\d:\d\d:\d\d:\d\d$/.test(tc) && tc !== '00:00:00:00', tc);
+    const activos = [...d.querySelectorAll('.nav a')].filter((a) => a.getAttribute('aria-current') === 'true');
+    check('navegación · marca una sola sección', activos.length === 1, activos.map((a) => a.getAttribute('href')).join(',') || 'ninguna');
+    check('navegación · la barra cambia de mundo', d.body.dataset.chrome === 'shop', d.body.dataset.chrome);
+    check('navegación · la barra se lee sobre el mundo claro',
+      (() => {
+        const bar = d.querySelector('.topbar');
+        const cs = w.getComputedStyle(bar);
+        return cs.color.startsWith('rgb') && cs.color !== 'rgb(244, 241, 234)';
+      })(), w.getComputedStyle(d.querySelector('.topbar')).color);
+
+    /* 9. contraste medido, no supuesto */
+    w.scrollTo(0, 0);
+    await sleep(200);
+    audit('portada · entradilla', '.hero .lede');
+    audit('portada · antetítulo mono', '.hero__slug');
+    audit('portada · ficha lateral', '.hero__meta li');
+    audit('portada · botón principal', '.btn--solid');
+    audit('portada · botón con borde', '.btn:not(.btn--solid)');
+    audit('koniec · rótulo de escena', '#koniec .scene__slug');
+    audit('koniec · párrafo', '#koniec .prose p');
+    audit('koniec · descripción de la lista', '#koniec .list li em');
+    audit('koniec · aviso', '#koniec .note');
+    audit('koniec · hueco de material', '.slot__label span');
+    audit('koniec · ficha de hito', '.hito__body p');
+    audit('trayectoria · años', '#trayectoria .road .yr');
+    audit('trofeos · descripción', '.prize p');
+    audit('contacto · etiqueta', '.contact__list .k');
+    audit('contacto · etiqueta de campo', '.field label');
+    audit('contacto · aviso del formulario', '.form__status');
+    audit('pie · colofón', '.colophon span');
+    audit('taller · rótulo del estado', '.lab__badge span');
+    audit('taller · ayuda del lienzo', '.lab__hint');
+    audit('taller · etiquetas del panel', '.readout dt');
+    audit('taller · semilla de la criatura', '.critter__seed');
+    audit('pie · marquesina', '.marquee__track span');
+
+    /* 10. movimiento reducido */
+    const reduce = w.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      check('movimiento reducido · sin grano', !d.getElementById('grain'));
+      check('movimiento reducido · sin haz', !d.querySelector('.beam'));
+      check('movimiento reducido · cursor sin capturar', !d.documentElement.classList.contains('cursor-on'));
+      check('movimiento reducido · laboratorio arranca en pausa', arrancaPausado);
+      check('movimiento reducido · revelados visibles',
+        [...d.querySelectorAll('[data-reveal]')].every((el) => w.getComputedStyle(el).opacity === '1'));
+    } else {
+      check('movimiento normal · grano activo', !!d.getElementById('grain'));
+      check('movimiento normal · haz activo', !!d.querySelector('.beam'));
+      // el diafragma ya se activó con los pointermove sintéticos de arriba:
+      // eso confirma que el listener de ratón funciona
+      check('movimiento normal · el cursor reacciona al ratón', d.documentElement.classList.contains('cursor-on'));
+    }
+
+    /* 12. peso y tiempos: «rápido» es una afirmación que hay que medir */
+    const recursos = w.performance.getEntriesByType('resource');
+    const origen = new URL(f.src, location.href).origin;
+    const propios = recursos.filter((r) => r.name.startsWith(origen));
+    const externos = recursos.filter((r) => !r.name.startsWith(origen));
+    const kb = (n) => Math.round(n / 1024);
+    const pesoPropio = propios.reduce((s, r) => s + (r.transferSize || r.decodedBodySize || 0), 0);
+    const pesoFuera = externos.reduce((s, r) => s + (r.transferSize || r.decodedBodySize || 0), 0);
+
+    check('peso · recursos propios por debajo de 400 KB', pesoPropio < 400 * 1024,
+      kb(pesoPropio) + ' KB en ' + propios.length + ' archivos');
+    check('peso · sin librerías de terceros',
+      externos.every((r) => /fonts\.(googleapis|gstatic)\.com/.test(r.name)),
+      externos.length + ' recursos externos (' + kb(pesoFuera) + ' KB, sólo tipografías web)');
+
+    const nav = w.performance.getEntriesByType('navigation')[0];
+    if (nav) {
+      check('velocidad · DOM listo por debajo de 2 s', nav.domContentLoadedEventEnd < 2000,
+        Math.round(nav.domContentLoadedEventEnd) + ' ms');
+      check('velocidad · página cargada por debajo de 3 s', nav.loadEventEnd < 3000 || nav.loadEventEnd === 0,
+        Math.round(nav.loadEventEnd) + ' ms');
+    }
+
+    /* 13. formulario — al final y aislado: su mailto navega el marco */
+    const form = d.getElementById('contactForm');
+    check('formulario · exige los campos', !form.checkValidity());
+    d.getElementById('f-nombre').value = 'Ada Lovelace';
+    d.getElementById('f-email').value = 'ada@example.com';
+    d.getElementById('f-mensaje').value = 'Hola Andrés.';
+    check('formulario · valida con datos', form.checkValidity());
+    check('formulario · aviso inicial', /cliente de correo|mail client/.test(d.getElementById('formStatus').textContent));
+    form.dispatchEvent(new w.Event('submit', { bubbles: true, cancelable: true }));
+    check('formulario · compone el correo', /Abriendo|Opening/.test(d.getElementById('formStatus').textContent),
+      d.getElementById('formStatus').textContent.slice(0, 46));
+  } catch (err) {
+    check('batería completa sin excepciones', false, String((err && err.message) || err));
+  }
+
+  const resumen = 'RESUMEN | ' + (failures ? failures + ' fallo(s) de ' + lines.length : 'todo correcto · ' + lines.length + ' comprobaciones');
+  lines.push(resumen);
+  note('FOTOGRAMAS | ' + framesReales + ' esperas resueltas por fotograma, ' + tiemposAgotados + ' por temporizador');
+  try { fetch('/__results', { method: 'POST', body: resumen, keepalive: true }).catch(() => {}); } catch (e) { /* nada */ }
+  console.log('CHECK|' + resumen);
+  document.getElementById('out').textContent = lines.join('\n');
+});
+</script>
+</body>
+</html>

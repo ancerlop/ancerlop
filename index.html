@@ -1,186 +1,632 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="no-js">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Andrés Cervantes López — IA y videojuegos</title>
-<meta name="description" content="Andrés Cervantes López: IA (Python, Grupo AL) y videojuegos/XR (Unity, Nintendo Switch, Kreatures). Málaga. Ganador CM Málaga 2026 y Hack for Good 2024. CV descargable." />
-<meta property="og:title" content="Andrés Cervantes López — IA y videojuegos" />
-<meta property="og:description" content="Entreno inteligencias, construyo mundos." />
-<meta property="og:type" content="website" />
-<meta property="og:image" content="cerebroformulascolores.jpg" />
-<link rel="icon" href="cerebroformulascolores.jpg" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Andrés Cervantes López · Director Técnico — cine, IA y videojuegos</title>
+<meta name="description" content="Andrés Cervantes López, Director Técnico en Koniec Films desde octubre de 2026. Antes, laboratorio de inteligencia artificial. Siempre, Kreatures, estudio creativo-tecnológico en el Polo de Contenidos Digitales de Málaga." />
+<meta name="author" content="Andrés Cervantes López" />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#08080a" />
+<link rel="canonical" href="https://ancerlop.github.io/" />
+
+<meta property="og:type" content="profile" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:locale:alternate" content="en_GB" />
+<meta property="og:site_name" content="ancerlop" />
+<meta property="og:title" content="Andrés Cervantes López · Entreno inteligencias, construyo mundos" />
+<meta property="og:description" content="Director Técnico en Koniec Films. Ex laboratorio de IA. Fundador de Kreatures, Málaga." />
+<meta property="og:url" content="https://ancerlop.github.io/" />
+<meta property="og:image" content="https://ancerlop.github.io/assets/og.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Cerebro partido en dos mitades: fórmulas matemáticas a un lado, color al otro." />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="assets/icon-180.png" />
+<link rel="manifest" href="assets/manifest.webmanifest" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/site.css" />
-</head>
-<body data-lang="es">
-<a class="skip" href="#main">Saltar al contenido</a>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
 
-<header class="bar">
-  <span class="sig">ancerlop</span>
-  <nav aria-label="Secciones">
-    <a href="#universos">Universos</a>
-    <a href="#trayectoria">Trayectoria</a>
-    <a href="#proyectos">Proyectos</a>
-    <a href="#trofeos">Trofeos</a>
-    <a href="#contacto">Contacto</a>
+<link rel="stylesheet" href="css/site.css" />
+<link rel="stylesheet" href="css/lab.css" />
+
+<script>document.documentElement.classList.replace('no-js','js');</script>
+<noscript><style>.leader{display:none!important}</style></noscript>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Andrés Cervantes López",
+  "alternateName": "ancerlop",
+  "url": "https://ancerlop.github.io/",
+  "email": "mailto:ancerlop@gmail.com",
+  "telephone": "+34657219277",
+  "jobTitle": "Director Técnico",
+  "description": "Director Técnico en Koniec Films, fundador de Kreatures y especialista en inteligencia artificial y videojuegos.",
+  "worksFor": { "@type": "Organization", "name": "Koniec Films" },
+  "alumniOf": [
+    { "@type": "CollegeOrUniversity", "name": "Universidad de Málaga" },
+    { "@type": "Organization", "name": "42 Málaga" }
+  ],
+  "address": { "@type": "PostalAddress", "addressLocality": "Málaga", "addressCountry": "ES" },
+  "knowsAbout": ["Dirección técnica", "Animación", "Inteligencia artificial", "Videojuegos", "XR", "Python", "Unity"],
+  "award": ["Ideatón Cultura en Código · CM Málaga 2026", "Hack for Good 2024"]
+}
+</script>
+</head>
+
+<body data-chrome="screen" data-grain="on">
+
+<!-- Aviso de apertura local. Sólo aparece si los módulos ES no pueden cargar
+     (file://), y lo enseña la guarda de arranque del final del documento. -->
+<div class="aviso" id="avisoLocal" role="status" hidden>
+  <p>
+    <strong>Estás abriendo el archivo directamente</strong> (<code>file://</code>), y así el
+    navegador bloquea los módulos ES por seguridad. Por eso la página se quedaba en la cuenta atrás.
+  </p>
+  <p>
+    Sirve la carpeta por HTTP y entra desde ahí:
+    <code>python -m http.server 8765</code> → <code>http://127.0.0.1:8765</code>.
+    En GitHub Pages funciona sin hacer nada.
+  </p>
+</div>
+
+<a class="skip" href="#main" data-en="Skip to content">Saltar al contenido</a>
+
+<!-- ===================== CUENTA ATRÁS DE PROYECTOR ===================== -->
+<div class="leader" id="leader" role="presentation" title="Saltar introducción">
+  <div class="leader__disc">
+    <svg viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="100" cy="100" r="93" fill="none" stroke="currentColor" stroke-opacity=".22" />
+      <circle cx="100" cy="100" r="71" fill="none" stroke="currentColor" stroke-opacity=".12" />
+      <line x1="100" y1="7" x2="100" y2="193" stroke="currentColor" stroke-opacity=".18" />
+      <line x1="7" y1="100" x2="193" y2="100" stroke="currentColor" stroke-opacity=".18" />
+      <path class="sweep" d="M100 100 L100 7 A93 93 0 0 1 166 34 Z" fill="currentColor" fill-opacity=".1" />
+    </svg>
+    <span class="leader__num" id="leaderNum">5</span>
+  </div>
+  <p class="leader__slug" data-en="Academy leader · click to skip">Cuenta atrás · clic para saltar</p>
+</div>
+
+<!-- ===================== CAPAS DE TEXTURA ===================== -->
+<canvas class="grain" id="grain" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__ring"></span></div>
+
+<!-- ===================== BARRA ===================== -->
+<header class="topbar">
+  <a class="sig" href="#inicio">ancerlop</a>
+
+  <nav class="nav" id="nav" aria-label="Secciones">
+    <a href="#koniec" data-en="Koniec">Koniec</a>
+    <a href="#laboratorio" data-en="Lab">Laboratorio</a>
+    <a href="#kreatures">Kreatures</a>
+    <a href="#trayectoria" data-en="Track record">Trayectoria</a>
+    <a href="#trofeos" data-en="Awards">Trofeos</a>
+    <a href="#contacto" data-en="Contact">Contacto</a>
   </nav>
+
+  <div class="tools">
+    <span class="timecode" id="timecode" aria-hidden="true">00:00:00:00</span>
+    <button class="tool" id="grainBtn" type="button" aria-pressed="true" data-en="grain">grano</button>
+    <button class="tool" id="langBtn" type="button" aria-pressed="false" lang="en">EN</button>
+    <button class="tool menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="nav" data-en="menu">menú</button>
+  </div>
+
+  <div class="progress" id="progress" aria-hidden="true"></div>
 </header>
 
 <main id="main">
-<!-- PORTADA: la pieza es tu imagen -->
-<section class="cover">
-  <p class="kicker mono">Andrés Cervantes López · Málaga · IA + videojuegos + XR</p>
-  <div class="cover-grid">
-    <div class="cover-type">
-      <h1><span class="ln">Entreno inteligencias,</span><span class="ln">construyo mundos.</span></h1>
-      <p class="lede">Desarrollo IA en Python en Grupo AL y programo videojuegos en Unity, con un port a Nintendo Switch en marcha. Una cabeza, dos oficios — como la pieza que ves aquí.</p>
-      <div class="cta-row">
-        <a class="btn solid" href="CV-Andres Cervantes Lopez.pdf" download>Descargar CV</a>
-        <a class="btn line" href="#contacto">Hablemos</a>
+
+<!-- ============================ PORTADA ============================ -->
+<section class="world world--screen hero" id="inicio" aria-labelledby="heroTitle">
+  <canvas class="beam" id="beam" aria-hidden="true"></canvas>
+
+  <div class="hero__in">
+    <p class="hero__slug mono">
+      <span>ancerlop</span><span aria-hidden="true">/</span>
+      <span>Málaga</span><span aria-hidden="true">/</span>
+      <span data-en="Technical direction">Dirección técnica</span>
+    </p>
+
+    <h1 class="display" id="heroTitle">
+      <span class="line"><span class="line__in" data-en="I train intelligences,">Entreno inteligencias,</span></span>
+      <span class="line"><span class="line__in" style="--d:.12s" data-en="I build worlds.">construyo mundos.</span></span>
+    </h1>
+
+    <div class="hero__cols">
+      <div>
+        <p class="lede" data-en-html="I am Andrés Cervantes López. I start on 13 October 2026 as <strong>Technical Director at Koniec Films</strong>. I come from an artificial intelligence lab, and I still run <strong>Kreatures</strong>, my creative-technological studio at the Málaga Digital Content Pole.">
+          Soy Andrés Cervantes López. Empiezo el 13 de octubre de 2026 como <strong>Director Técnico en Koniec&nbsp;Films</strong>. Vengo de un laboratorio de inteligencia artificial y sigo al frente de <strong>Kreatures</strong>, mi estudio creativo-tecnológico en el Polo de Contenidos Digitales de Málaga.
+        </p>
+
+        <div class="cta">
+          <a class="btn btn--solid" href="#laboratorio"><span data-en="Enter the workshop">Bajar al taller</span></a>
+          <a class="btn" href="CV-Andres%20Cervantes%20Lopez.pdf" download><span data-en="Download CV">Descargar CV</span></a>
+          <a class="btn" href="#contacto"><span data-en="Get in touch">Hablemos</span></a>
+        </div>
+      </div>
+
+      <ul class="hero__meta mono">
+        <li data-en-html="<b>Now</b> Koniec Films"><b>Ahora</b> Koniec Films</li>
+        <li data-en-html="<b>Before</b> AI lab"><b>Antes</b> laboratorio de IA</li>
+        <li data-en-html="<b>Always</b> Kreatures"><b>Siempre</b> Kreatures</li>
+        <li data-en-html="<b>Two</b> master's degrees: AI &amp; games"><b>Dos</b> másteres: IA y videojuegos</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="cue mono" aria-hidden="true"><span class="cue__tick"></span><span>rodar</span></p>
+</section>
+
+<!-- ============================ 01 KONIEC ============================ -->
+<section class="world world--screen" id="koniec" aria-labelledby="koniecTitle">
+  <div class="world__in">
+    <header class="scene__head">
+      <p class="scene__slug mono" data-reveal="up">
+        <b>SEC 01</b> <span data-en="INT. EDIT SUITE — DAY">INT. SALA DE MONTAJE — DÍA</span>
+      </p>
+      <h2 class="display" id="koniecTitle" data-reveal="mask">Koniec Films</h2>
+    </header>
+
+    <div class="cols cols--wide">
+      <div class="prose">
+        <p class="lead" data-reveal="up" data-en-html="«Koniec» means <em>the end</em> in Polish: the last word of every film. It is the studio where I start as Technical Director on 13 October 2026.">
+          «Koniec» significa <em>fin</em> en polaco: la última palabra de toda película. Es el estudio donde empiezo como Director Técnico el 13 de octubre de 2026.
+        </p>
+        <p data-reveal="up" style="--d:.08s" data-en-html="Here I work as <strong>Technical Director</strong>: deciding how what you see on screen gets built. Pipeline, in-house tools, production data and teams — plus one specific obsession: putting artificial intelligence where it genuinely saves months of work, not where it looks good in a demo.">
+          Aquí ejerzo de <strong>Director Técnico</strong>: decidir cómo se construye lo que luego se ve en pantalla. Pipeline, herramientas internas, datos de producción y equipos; y una obsesión concreta: meter inteligencia artificial donde de verdad ahorra meses de trabajo, no donde queda bonito en una demo.
+        </p>
+        <p class="note" data-reveal="up" style="--d:.16s" data-en="Animated feature film in production — details to be confirmed and published here.">
+          Largometraje de animación en producción — detalles por confirmar y publicar aquí.
+        </p>
+      </div>
+
+      <ul class="list">
+        <li data-reveal="up">
+          <span>01</span>
+          <strong data-en-html="Pipeline and tools<em>From script to render: what gets automated, what gets standardised, and what stays in the artist's hands.</em>">Pipeline y herramientas<em>Del guion al render: qué se automatiza, qué se estandariza y qué se queda en manos del artista.</em></strong>
+        </li>
+        <li data-reveal="up" style="--d:.06s">
+          <span>02</span>
+          <strong data-en-html="Leading teams<em>Coordinating technicians and artists so the animation arrives on time, with the finish cinema demands.</em>">Dirección de equipos<em>Coordinar técnicos y artistas para que la animación llegue a tiempo y con el acabado que exige el cine.</em></strong>
+        </li>
+        <li data-reveal="up" style="--d:.12s">
+          <span>03</span>
+          <strong data-en-html="Production data<em>Measuring to decide: tracking, bottlenecks and shot-level cost control.</em>">Datos de producción<em>Medir para decidir: seguimiento, cuellos de botella y control de coste por plano.</em></strong>
+        </li>
+        <li data-reveal="up" style="--d:.18s">
+          <span>04</span>
+          <strong data-en-html="Applied AI<em>Research and prototypes: computer vision, generation and automation inside the real pipeline.</em>">IA aplicada<em>Investigación y prototipos: visión por computador, generación y automatización dentro del pipeline real.</em></strong>
+        </li>
+      </ul>
+    </div>
+
+    <!-- hueco de material real: se ve que falta, y queda digno -->
+    <figure class="frame slot" data-reveal="up" style="margin-top:clamp(2rem,5vh,3.4rem)">
+      <span class="slot__marks" aria-hidden="true"></span>
+      <span class="slot__label">
+        <b data-en="Frame 2.39:1 · awaiting material">Marco 2.39:1 · pendiente de material</b>
+        <span data-en="Drop an authorised still, teaser or making-of clip here. See CONTENIDO.md.">Aquí va un fotograma, teaser o making-of autorizado. Ver CONTENIDO.md.</span>
+      </span>
+      <figcaption>
+        <span data-en="Koniec Films · sample">Koniec Films · muestra</span>
+        <span>2.39:1 · 4096×1716</span>
+      </figcaption>
+    </figure>
+
+    <div class="hito" data-reveal="up" style="margin-top:clamp(1.6rem,4vh,2.4rem)">
+      <p class="hito__num"><b>13</b><span data-en="Oct">Oct</span></p>
+      <div class="hito__body">
+        <h3 data-en-html="First day at <i>Koniec Films</i>">Primer día en <i>Koniec Films</i></h3>
+        <p data-en="I start as Technical Director on 13 October 2026. Everything about this stage is still to be built — and that is exactly the interesting part.">
+          Empiezo como Director Técnico el 13 de octubre de 2026. Todo lo de esta etapa está por construir, y esa es justo la parte interesante.
+        </p>
       </div>
     </div>
-    <figure class="piece" id="piece">
-      <img src="cerebroformulascolores.jpg" alt="Cerebro dividido en dos mitades: una con fórmulas matemáticas y otra con salpicaduras de color" width="412" height="313" fetchpriority="high" />
-    </figure>
-  </div>
-  <ul class="credits mono">
-    <li>🏆 CM Málaga 2026</li>
-    <li>🏆 Hack for Good 2024</li>
-    <li>🎮 port a Nintendo Switch</li>
-    <li>💼 Grupo AL · Kreatures</li>
-  </ul>
-</section>
-<!-- UNIVERSOS -->
-<section class="spread" id="universos">
-  <header class="spread-head">
-    <p class="mono num">01</p>
-    <h2>Dos universos</h2>
-  </header>
-  <div class="duo">
-    <article class="side ia">
-      <h3>La fórmula</h3>
-      <p class="big">Desarrollo IA en <strong>Grupo AL</strong> desde abril de 2023: datos, modelos y Flask al servicio de la administración local de Málaga.</p>
-      <p>Vengo de la especialización en IA &amp; Big Data (Python, R, PowerBI, Flask) y del método 42 Málaga, donde se aprende haciendo y en equipo: datos, modelos y despliegue al servicio de la administración local.</p>
-      <p class="stack mono">Python · R · Flask · PowerBI · Git · PyTorch · Docker</p>
-    </article>
-    <article class="side xr">
-      <h3>El color</h3>
-      <p class="big">Programador Unity en <strong>Cooking &amp; Publishing</strong> desde marzo de 2023, con un <strong>port a Nintendo Switch</strong> en marcha, y estudio propio <strong>Kreatures</strong> desde octubre de 2023.</p>
-      <p>Especialización en videojuegos y XR (Unity, C#, XR), game jams publicadas y programa de emprendimiento Promálaga (enero 2024). Programar un juego es cuidar el ritmo, el tacto y el color.</p>
-      <p class="stack mono">Unity · C# · XR · Nintendo Switch · Godot · GLSL · Blender</p>
-    </article>
   </div>
 </section>
 
-<!-- TRAYECTORIA -->
-<section class="spread" id="trayectoria">
-  <header class="spread-head">
-    <p class="mono num">02</p>
-    <h2>Trayectoria</h2>
-  </header>
-  <ol class="years">
-    <li><span class="yr mono">1999–2003</span><div><strong>I.T. Informática de Sistemas</strong> — Universidad de Málaga</div></li>
-    <li><span class="yr mono">2003–2005</span><div><strong>Técnico Superior en Administración de Sistemas</strong> — I.E.S. Guadaljaire</div></li>
-    <li><span class="yr mono">2006–2016</span><div><strong>Profesor online · soporte y supervisión</strong> — Liberformación y Accenture</div></li>
-    <li><span class="yr mono">2021–2022</span><div><strong>Especialización en IA y Big Data</strong> — I.E.S. Portada Alta</div></li>
-    <li><span class="yr mono">2022–2024</span><div><strong>Programación</strong> — 42 Málaga, Fundación Telefónica</div></li>
-    <li><span class="yr mono">2022–2023</span><div><strong>Especialización en Videojuegos y XR</strong> — PTA, Polo de Contenidos Digitales</div></li>
-    <li class="live"><span class="yr mono">2023–hoy</span><div><strong>Grupo AL · Cooking &amp; Publishing · Kreatures</strong> — IA/Python, Unity y port a Switch, estudio propio</div></li>
-  </ol>
-  <p class="mono fine">Castellano nativo · inglés B1 · disponibilidad total · remoto · carnet y coche · <a href="CV-Andres Cervantes Lopez.pdf" download>CV completo en PDF</a></p>
-</section>
-<!-- PROYECTOS -->
-<section class="spread" id="proyectos">
-  <header class="spread-head">
-    <p class="mono num">03</p>
-    <h2>Proyectos</h2>
-  </header>
-  <ul class="works">
-    <li>
-      <a href="https://www.grupoal.es/" target="_blank" rel="noopener">
-        <span class="work-t">Grupo AL · IA aplicada</span>
-        <span class="work-d">Python y datos para modernizar la administración local. Desde abril de 2023.</span>
-        <span class="work-a mono">grupoal.es</span>
-      </a>
-    </li>
-    <li>
-      <a href="https://www.42malaga.com/" target="_blank" rel="noopener">
-        <span class="work-t">42 Málaga</span>
-        <span class="work-d">Dos años de programación peer-to-peer: proyectos reales, sin clases, en equipo.</span>
-        <span class="work-a mono">42malaga.com</span>
-      </a>
-    </li>
-    <li>
-      <a href="CV-Andres Cervantes Lopez.pdf" download>
-        <span class="work-t">Kreatures · estudio propio</span>
-        <span class="work-d">Estudio de videojuegos fundado en octubre de 2023. Detalles en el CV.</span>
-        <span class="work-a mono">CV en PDF ↓</span>
-      </a>
-    </li>
-    <li>
-      <a href="CV-Andres Cervantes Lopez.pdf" download>
-        <span class="work-t">Cooking &amp; Publishing · Unity</span>
-        <span class="work-d">Desarrollo en Unity y port a Nintendo Switch. Desde marzo de 2023.</span>
-        <span class="work-a mono">CV en PDF ↓</span>
-      </a>
-    </li>
-  </ul>
-</section>
+<!-- ======================= CORTE: SALA → TALLER ======================= -->
+<div class="cut" aria-hidden="true">
+  <p class="cut__slug mono"><span data-en="End of the shoot · the workshop begins">Fin del rodaje · empieza el taller</span></p>
+</div>
 
-<!-- TROFEOS -->
-<section class="spread" id="trofeos">
-  <header class="spread-head">
-    <p class="mono num">04</p>
-    <h2>Trofeos</h2>
-  </header>
-  <div class="prizes">
-    <article>
-      <p class="medal mono">oro · 2026</p>
-      <h3>Ideatón «Cultura en Código» · CM Málaga</h3>
-      <p>Ganador del ideatón de innovación cultural de FYCMA junto a 42 Málaga y el Ayuntamiento de Málaga: prototipo construido en 24 horas.</p>
-      <a class="mono" href="https://cmmalaga.fycma.com/cm-malaga-2026-premia-innovacion-cultural/" target="_blank" rel="noopener">cmmalaga.fycma.com →</a>
-    </article>
-    <article>
-      <p class="medal mono">oro · 2024</p>
-      <h3>Hack for Good</h3>
-      <p>Ganador del hackathon de innovación social de la Red de Cátedras Telefónica: tecnología con propósito, en equipo, contra reloj.</p>
-      <a class="mono" href="https://www.telefonica.es/es/sala-comunicacion/prensa/tres-equipos-andaluces-se-alzan-con-los-premios-del-big-day-de-hackforgood-2025-de-la-red-de-catedras-telefonica/" target="_blank" rel="noopener">telefonica.es →</a>
-    </article>
+<!-- ============================ 02 LABORATORIO ============================ -->
+<section class="world world--shop" id="laboratorio" aria-labelledby="labTitle">
+  <div class="world__in">
+    <header class="scene__head">
+      <p class="scene__slug mono" data-reveal="up">
+        <b>SEC 02</b> <span data-en="INT. WORKSHOP — NIGHT">INT. TALLER — NOCHE</span>
+      </p>
+      <h2 class="display" id="labTitle" data-reveal="mask" data-en-html="The <i>laboratory</i>">El <i>laboratorio</i></h2>
+    </header>
+
+    <div class="cols cols--narrow">
+      <div class="prose">
+        <p class="lead" data-reveal="up" data-en="Before cinema, the lab: models, data and deployment. That habit never went away — so instead of telling you about it, I have set it up right here.">
+          Antes del cine, el laboratorio: modelos, datos y despliegue. Ese vicio no se pierde, así que en vez de contártelo te lo dejo aquí montado.
+        </p>
+
+        <figure class="frame frame--43" data-reveal="up" style="--d:.12s">
+          <img src="assets/cerebro.jpg" width="412" height="313" loading="lazy" decoding="async"
+               alt="Cerebro partido en dos mitades: a la izquierda, fórmulas matemáticas; a la derecha, salpicaduras de color."
+               data-en-alt="A brain split in two halves: mathematical formulas on the left, splashes of colour on the right." />
+          <figcaption>
+            <span data-en="Formula on one side, colour on the other.">La fórmula a un lado, el color al otro.</span>
+            <span aria-hidden="true">412×313</span>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="prose">
+        <p data-reveal="up" data-en="What you see below is a linear regression trained for real, by gradient descent, live. Drag the points and watch the model readjust: no magic, no black box — one step after another.">
+          Lo que ves abajo es una regresión lineal entrenada de verdad, por descenso de gradiente, en directo. Arrastra los puntos y mira cómo el modelo se reajusta: sin magia, sin caja negra, un paso detrás de otro.
+        </p>
+        <p class="note" data-reveal="up" style="--d:.08s" data-en="Why this and not a spinning logo: in production, a model is only useful if someone can explain what it does and how wrong it is. The AI I apply to film is judged the same way — with the loss in plain sight.">
+          Por qué esto y no un logo girando: en producción, un modelo sólo sirve si alguien puede explicar qué hace y cuánto se equivoca. La IA que aplico al cine se juzga igual — con la pérdida a la vista.
+        </p>
+      </div>
+    </div>
+
+    <div class="lab" id="labDescent" data-reveal="up">
+      <noscript>
+        <p class="note" style="margin:1.1rem">
+          El laboratorio entrena un modelo de verdad en tu navegador: activa JavaScript para verlo.
+        </p>
+      </noscript>
+      <div class="lab__stage">
+        <canvas id="descentStage" role="img" aria-label="Gráfico interactivo: puntos de datos y la recta que los ajusta" data-en-aria="Interactive chart: data points and the line that fits them"></canvas>
+        <p class="lab__badge mono" id="descentBadge" data-state="running"><i></i><span>Entrenando en vivo</span></p>
+        <p class="lab__hint mono" data-en-html="Drag a point · click empty space to add · alt+click to delete">Arrastra un punto · clic en vacío para añadir · alt+clic para borrar</p>
+      </div>
+
+      <div class="lab__panel">
+        <h3 data-en="Gradient descent">Descenso de gradiente</h3>
+        <p class="eq" id="descentEq">ŷ = w·x + b</p>
+
+        <dl class="readouts">
+          <div class="readout"><dt data-en="step">paso</dt><dd id="outSteps">0</dd></div>
+          <div class="readout"><dt data-en="loss (MSE)">pérdida (MSE)</dt><dd id="outLoss">—</dd></div>
+          <div class="readout"><dt>w</dt><dd id="outW">0.000</dd></div>
+          <div class="readout"><dt>b</dt><dd id="outB">0.000</dd></div>
+        </dl>
+
+        <div class="slider">
+          <label for="lr"><span data-en="learning rate">ritmo de aprendizaje</span> <output id="lrOut">0.060</output></label>
+          <input type="range" id="lr" min="1" max="400" value="6" step="1" aria-describedby="lrHint" />
+          <p class="hint" id="lrHint" data-en="Push it up: with too high a rate (depending on the data, above ~0.8) the model spins out instead of learning.">
+            Súbelo: con un ritmo demasiado alto (según los datos, por encima de ~0,8) el modelo se descontrola en vez de aprender.
+          </p>
+        </div>
+
+        <div class="controls">
+          <button class="ctl" id="descentToggle" type="button" aria-pressed="true">Pausar</button>
+          <button class="ctl" id="descentShake" type="button" data-en="Shake points">Sacudir puntos</button>
+          <button class="ctl" id="descentReset" type="button" data-en="Restart">Reiniciar</button>
+        </div>
+
+        <div class="loss">
+          <canvas id="lossChart" role="img" aria-label="Curva de pérdida durante el entrenamiento" data-en-aria="Loss curve during training"></canvas>
+        </div>
+        <p data-en="Loss curve. If it goes down, it is learning; if it explodes, the learning rate is too high — try it.">
+          Curva de pérdida. Si baja, está aprendiendo; si se dispara, el ritmo es demasiado alto — pruébalo.
+        </p>
+        <p class="sr" id="descentLive" aria-live="polite"></p>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- CONTACTO -->
-<section class="spread last" id="contacto">
-  <header class="spread-head">
-    <p class="mono num">05</p>
-    <h2>Hablemos</h2>
-  </header>
-  <p class="big">Estudios de juegos, equipos de IA, mundo XR: si buscas a alguien que entrene inteligencias y construya mundos, aquí estoy.</p>
-  <div class="contact">
-    <ul class="mono">
-      <li><a href="tel:+34657219277">+34 657 219 277</a></li>
-      <li><a href="mailto:ancerlop@gmail.com">ancerlop@gmail.com</a></li>
-      <li>Calle Miguel Ángel, Málaga · remoto · carnet + coche</li>
-      <li><a href="CV-Andres Cervantes Lopez.pdf" download>CV en PDF ↓</a></li>
-    </ul>
-    <form id="contactForm">
-      <input type="text" name="nombre" placeholder="Tu nombre" required autocomplete="name" />
-      <input type="email" name="email" placeholder="Tu email" required autocomplete="email" />
-      <textarea name="mensaje" rows="4" placeholder="Hola Andrés, vi tu web y..."></textarea>
-      <button type="submit">Enviar</button>
-    </form>
+<!-- ============================ 03 KREATURES ============================ -->
+<section class="world world--shop" id="kreatures" aria-labelledby="kreaturesTitle">
+  <div class="world__in">
+    <header class="scene__head">
+      <p class="scene__slug mono" data-reveal="up">
+        <b>SEC 03</b> <span data-en="INT. CREATURE FARM — NIGHT">INT. VIVERO — NOCHE</span>
+      </p>
+      <h2 class="display" id="kreaturesTitle" data-reveal="mask">Kreatures</h2>
+    </header>
+
+    <div class="cols cols--wide">
+      <div class="prose">
+        <p class="lead" data-reveal="up" data-en-html="My <strong>creative-technological outsourcing</strong> studio at the <strong>Málaga Digital Content Pole</strong> (PTA). We come in where a project needs technical muscle and creative judgement at the same time.">
+          Mi estudio de <strong>outsourcing creativo-tecnológico</strong> en el <strong>Polo de Contenidos Digitales de Málaga</strong> (PTA). Entramos donde un proyecto necesita músculo técnico y criterio creativo a la vez.
+        </p>
+        <p data-reveal="up" style="--d:.06s" data-en="We work in milestones and with open code as a flag: no black boxes that tie you to us. If the project calls for it, we plug into your pipeline; if there is no pipeline yet, we build it with you.">
+          Trabajamos por hitos y con el código abierto por bandera: nada de cajas negras que os aten a nosotros. Si el proyecto lo pide, entramos en vuestro pipeline; si todavía no lo hay, lo montamos con vosotros.
+        </p>
+
+        <dl class="readouts" data-reveal="up" style="--d:.12s">
+          <div class="readout"><dt data-en="Founded">Fundado</dt><dd data-en="October 2023">Octubre 2023</dd></div>
+          <div class="readout"><dt data-en="Based at">Sede</dt><dd data-en="Digital Content Pole · PTA, Málaga">Polo de Contenidos Digitales · PTA, Málaga</dd></div>
+          <div class="readout"><dt data-en="Team">Equipo</dt><dd data-en="assembled per project">se arma por proyecto</dd></div>
+          <div class="readout"><dt data-en="Mode">Modo</dt><dd data-en="remote / on-site">remoto / presencial</dd></div>
+        </dl>
+      </div>
+      <ul class="list">
+        <li data-reveal="up"><span>01</span><strong data-en-html="Fast prototyping<em>Proofs of concept in days, not quarters. If it is not going to work, better to know now.</em>">Prototipado rápido<em>Pruebas de concepto en días, no en trimestres. Si no va a funcionar, mejor saberlo ya.</em></strong></li>
+        <li data-reveal="up" style="--d:.05s"><span>02</span><strong data-en-html="Custom tools<em>Software built for the specific bottleneck of your production.</em>">Herramientas a medida<em>Software construido para el cuello de botella concreto de tu producción.</em></strong></li>
+        <li data-reveal="up" style="--d:.1s"><span>03</span><strong data-en-html="Applied AI<em>Vision, data and automation with a measurable return.</em>">IA aplicada<em>Visión, datos y automatización con retorno medible.</em></strong></li>
+        <li data-reveal="up" style="--d:.15s"><span>04</span><strong data-en-html="Games and XR<em>Unity, real-time and interactive experiences, from prototype to build.</em>">Videojuegos y XR<em>Unity, tiempo real e interactivos, del prototipo a la build.</em></strong></li>
+        <li data-reveal="up" style="--d:.2s"><span>05</span><strong data-en-html="Procedural art and sound<em>Variation generated by code: creatures, terrain, hair, animation.</em>">Arte y sonido procedural<em>Variación generada por código: criaturas, terreno, pelo, animación.</em></strong></li>
+      </ul>
+    </div>
+
+    <div class="vivero" data-reveal="up">
+      <noscript>
+        <p class="note" style="margin:1.1rem">
+          El vivero son criaturas generadas por código en tu navegador: activa JavaScript para verlas.
+        </p>
+      </noscript>
+      <div class="vivero__bar">
+        <p data-en="Six creatures generated from a seed. Press one to evolve it — the eyes follow you.">
+          Seis criaturas generadas con una semilla. Pulsa una para evolucionarla — los ojos te siguen.
+        </p>
+        <button class="ctl" id="viveroBtn" type="button" data-en="New litter">Nueva camada</button>
+      </div>
+      <div class="vivero__grid" id="viveroGrid"></div>
+    </div>
+
+    <p class="note" data-reveal="up" style="margin-top:1.4rem" data-en="Every creature is geometry calculated in the browser: no images, no libraries. The same principle we use to generate character variation, fur, terrain or animation.">
+      Cada criatura es geometría calculada en el navegador: sin imágenes, sin librerías. El mismo principio que usamos para generar variación de personaje, pelo, terreno o animación.
+    </p>
   </div>
 </section>
+
+<!-- ======================= CORTE: TALLER → SALA ======================= -->
+<div class="cut cut--back" aria-hidden="true">
+  <p class="cut__slug mono"><span data-en="End of the workshop · back to the screen">Fin del taller · vuelve la sala</span></p>
+</div>
+
+<!-- ============================ 04 TRAYECTORIA ============================ -->
+<section class="world world--screen" id="trayectoria" aria-labelledby="trayTitle">
+  <div class="world__in">
+    <header class="scene__head">
+      <p class="scene__slug mono" data-reveal="up"><b>SEC 04</b> <span data-en="MONTAGE — VARIOUS">MONTAJE — VARIOS</span></p>
+      <h2 class="display" id="trayTitle" data-reveal="mask" data-en="Track record">Trayectoria</h2>
+    </header>
+
+    <ol class="road">
+      <li data-live data-reveal="up">
+        <span class="yr">2026 →</span>
+        <span class="role" data-en-html="Technical Director<em>Pipeline, tools, teams and applied AI for animated feature films.</em>">Director Técnico<em>Pipeline, herramientas, equipos e IA aplicada a largometrajes de animación.</em></span>
+        <span class="where">Koniec Films</span>
+      </li>
+      <li data-live data-reveal="up">
+        <span class="yr">2023 →</span>
+        <span class="role" data-en-html="Founder<em>Creative-technological outsourcing studio.</em>">Fundador<em>Estudio de outsourcing creativo-tecnológico.</em></span>
+        <span class="where">Kreatures · PTA Málaga</span>
+      </li>
+      <li data-todo data-reveal="up">
+        <span class="yr">2023 – 2026</span>
+        <span class="role" data-en-html="AI engineer<em>Models, data and deployment for local public administration.</em>">Ingeniero de IA<em>Modelos, datos y despliegue para la administración pública local.</em></span>
+        <span class="where">AI lab · Málaga</span>
+      </li>
+      <li data-reveal="up">
+        <span class="yr">2023 – 2026</span>
+        <span class="role" data-en-html="Unity programmer<em>Console port and production support.</em>">Programador Unity<em>Port a consola y apoyo a producción.</em></span>
+        <span class="where">Cooking &amp; Publishing</span>
+      </li>
+      <li data-reveal="up">
+        <span class="yr">2022 – 2024</span>
+        <span class="role" data-en-html="Peer-to-peer programming<em>Two years of real projects, no classes, in teams.</em>">Programación peer-to-peer<em>Dos años de proyectos reales, sin clases, en equipo.</em></span>
+        <span class="where">42 Málaga</span>
+      </li>
+      <li data-reveal="up">
+        <span class="yr">2022 – 2023</span>
+        <span class="role" data-en-html="Games &amp; XR specialisation<em>Unity, C#, real-time and extended reality.</em>">Especialización en videojuegos y XR<em>Unity, C#, tiempo real y realidad extendida.</em></span>
+        <span class="where" data-en="PTA · Málaga">PTA · Málaga</span>
+      </li>
+      <li data-reveal="up">
+        <span class="yr">2021 – 2022</span>
+        <span class="role" data-en-html="AI &amp; Big Data specialisation<em>Python, R, Flask, Power BI.</em>">Especialización en IA y Big Data<em>Python, R, Flask, Power BI.</em></span>
+        <span class="where" data-en="I.E.S. Portada Alta">I.E.S. Portada Alta</span>
+      </li>
+      <li data-reveal="up">
+        <span class="yr">2006 – 2016</span>
+        <span class="role" data-en-html="Online teaching · support<em>Training platforms and technical support.</em>">Docencia online · soporte<em>Plataformas de formación y soporte técnico.</em></span>
+        <span class="where">Liberformación · Accenture</span>
+      </li>
+      <li data-reveal="up">
+        <span class="yr">1999 – 2005</span>
+        <span class="role" data-en-html="Computer Systems Engineering<em>University of Málaga · Higher Technician in Systems Administration.</em>">Informática de Sistemas<em>Universidad de Málaga · Técnico Superior en Administración de Sistemas.</em></span>
+        <span class="where">UMA · I.E.S. Guadaljaire</span>
+      </li>
+    </ol>
+
+    <p class="note" data-reveal="up" style="margin-top:1.6rem" data-en-html="Two master's degrees behind all this: artificial intelligence and video game development. <a href=&quot;CV-Andres%20Cervantes%20Lopez.pdf&quot; download>Full CV (PDF)</a>.">
+      Detrás de todo esto, dos másteres: inteligencia artificial y desarrollo de videojuegos. <a href="CV-Andres%20Cervantes%20Lopez.pdf" download>CV completo (PDF)</a>.
+    </p>
+  </div>
+</section>
+
+<!-- ============================ 05 TROFEOS ============================ -->
+<section class="world world--screen" id="trofeos" aria-labelledby="prizeTitle">
+  <div class="world__in">
+    <header class="scene__head">
+      <p class="scene__slug mono" data-reveal="up"><b>SEC 05</b> <span data-en="AWARDS — 2024 / 2026">PALMARÉS — 2024 / 2026</span></p>
+      <h2 class="display" id="prizeTitle" data-reveal="mask" data-en="Awards">Trofeos</h2>
+    </header>
+
+    <div class="prizes">
+      <article class="prize" data-reveal="up" style="--d:.08s">
+        <p class="prize__medal" data-en="Winner · 2026">Ganador · 2026</p>
+        <h3 data-en-html="Ideathon «Cultura en Código»">Ideatón «Cultura en Código»</h3>
+        <p data-en="Winner of the cultural innovation ideathon at CM Málaga (FYCMA), with 42 Málaga and the City Council of Málaga: a prototype built in 24 hours.">
+          Ganador del ideatón de innovación cultural de CM Málaga (FYCMA), junto a 42 Málaga y el Ayuntamiento de Málaga: prototipo construido en 24 horas.
+        </p>
+        <a href="https://cmmalaga.fycma.com/" target="_blank" rel="noopener noreferrer">cmmalaga.fycma.com →</a>
+      </article>
+
+      <article class="prize" data-reveal="up" style="--d:.16s">
+        <p class="prize__medal" data-en="Winner · 2024">Ganador · 2024</p>
+        <h3>Hack for Good</h3>
+        <p data-en="Winner of the social innovation hackathon run by Telefónica's Chair Network: technology with a purpose, in a team, against the clock.">
+          Ganador del hackathon de innovación social de la Red de Cátedras Telefónica: tecnología con propósito, en equipo, contra reloj.
+        </p>
+        <a href="https://www.telefonica.es/" target="_blank" rel="noopener noreferrer">telefonica.es →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 06 CONTACTO ============================ -->
+<section class="world world--screen" id="contacto" aria-labelledby="contactTitle">
+  <div class="world__in">
+    <header class="scene__head">
+      <p class="scene__slug mono" data-reveal="up"><b>SEC 06</b> <span data-en="INT. OFFICE — DAY">INT. DESPACHO — DÍA</span></p>
+      <h2 class="display" id="contactTitle" data-reveal="mask" data-en-html="Let's <i>talk</i>">Hable<i>mos</i></h2>
+    </header>
+
+    <div class="contact">
+      <ul class="contact__list">
+        <li data-reveal="up">
+          <span class="k" data-en="Email">Email</span>
+          <a href="mailto:ancerlop@gmail.com">ancerlop@gmail.com</a>
+        </li>
+        <li data-reveal="up" style="--d:.05s">
+          <span class="k" data-en="Phone">Teléfono</span>
+          <a href="tel:+34657219277">+34 657 219 277</a>
+        </li>
+        <li data-reveal="up" style="--d:.1s">
+          <span class="k" data-en="Where">Dónde</span>
+          <span class="v">Málaga · <span data-en="remote / on-site">remoto / presencial</span></span>
+        </li>
+        <li data-reveal="up" style="--d:.15s">
+          <span class="k" data-en="Code">Código</span>
+          <a href="https://github.com/ancerlop" target="_blank" rel="noopener noreferrer">github.com/ancerlop</a>
+        </li>
+        <li data-reveal="up" style="--d:.2s">
+          <span class="k">CV</span>
+          <a href="CV-Andres%20Cervantes%20Lopez.pdf" download data-en="Download PDF ↓">Descargar PDF ↓</a>
+        </li>
+      </ul>
+
+      <form class="form" id="contactForm" novalidate>
+        <div class="field">
+          <label for="f-nombre" data-en="Your name">Tu nombre</label>
+          <input id="f-nombre" name="nombre" type="text" autocomplete="name" required data-en-placeholder="Ada Lovelace" placeholder="Ada Lovelace" />
+        </div>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required data-en-placeholder="you@studio.com" placeholder="tu@estudio.com" />
+        </div>
+        <div class="field">
+          <label for="f-mensaje" data-en="What do you have in mind?">¿Qué tienes en mente?</label>
+          <textarea id="f-mensaje" name="mensaje" rows="5" data-en-placeholder="Hello Andrés, we are working on..." placeholder="Hola Andrés, estamos trabajando en..."></textarea>
+        </div>
+        <div class="form__foot">
+          <button class="btn btn--solid" type="submit"><span data-en="Open my email">Abrir mi correo</span></button>
+          <p class="form__status" id="formStatus" role="status" data-en="Opens your mail client, pre-filled. No servers, no tracking.">
+            Abre tu cliente de correo con el mensaje escrito. Sin servidores ni rastreo.
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
 </main>
 
-<footer class="foot mono">
-  <span>2026 Andrés Cervantes López</span>
-  <span>HTML · CSS · JS · sin build · GitHub Pages</span>
+<!-- ============================ PIE ============================ -->
+<footer class="foot">
+  <div class="foot__in">
+    <div class="konec" data-reveal="up">
+      <b>KONIEC</b>
+      <span data-en="the end · and back to the beginning">el fin · y vuelta a empezar</span>
+    </div>
+    <div>
+      <p class="mono" style="margin-bottom:.8rem" data-en="Built by hand in HTML, CSS and JavaScript. No build step, no trackers, no cookies.">
+        Hecho a mano en HTML, CSS y JavaScript. Sin build, sin rastreadores, sin cookies.
+      </p>
+      <div class="colophon">
+        <span>© <span id="year">2026</span> Andrés Cervantes López</span>
+        <a href="https://github.com/ancerlop/ancerlop" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://github.com/ancerlop/ancerlop/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT</a>
+        <a href="CV-Andres%20Cervantes%20Lopez.pdf" download>CV</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee" aria-hidden="true" style="margin-top:2.4rem">
+    <div class="marquee__track">
+      <span><b>Director Técnico</b> · Koniec Films</span><span>·</span>
+      <span>Inteligencia artificial</span><span>·</span>
+      <span>Videojuegos &amp; XR</span><span>·</span>
+      <span><b>Kreatures</b> · PTA Málaga</span><span>·</span>
+      <span>Python · Unity · C# · GLSL</span><span>·</span>
+      <span>Kreatures · PTA Málaga</span><span>·</span>
+      <span><b>Director Técnico</b> · Koniec Films</span><span>·</span>
+      <span>Inteligencia artificial</span><span>·</span>
+      <span>Videojuegos &amp; XR</span><span>·</span>
+      <span><b>Kreatures</b> · PTA Málaga</span><span>·</span>
+      <span>Python · Unity · C# · GLSL</span><span>·</span>
+      <span>Kreatures · PTA Málaga</span><span>·</span>
+    </div>
+  </div>
 </footer>
 
-<script src="js/site.js"></script>
+<script type="module" src="js/main.js"></script>
+
+<script>
+/* Guarda de arranque. Es un script clásico a propósito: si los módulos ES no
+   llegan —al abrir el archivo con doble clic el navegador los bloquea por
+   CORS—, la cuenta atrás se quedaría tapando la página para siempre. Esta capa
+   garantiza que la página se destape pase lo que pase, y explica el motivo. */
+(function () {
+  var ESPERA = 2500;
+  var reintentos = 0;
+
+  function destapar() {
+    var capa = document.getElementById('leader');
+    if (capa) {
+      capa.classList.add('is-out');
+      setTimeout(function () { capa.remove(); }, 600);
+    }
+    document.body.classList.add('is-ready');
+    var ocultos = document.querySelectorAll('[data-reveal], .hero');
+    for (var i = 0; i < ocultos.length; i++) ocultos[i].classList.add('is-in');
+    try { sessionStorage.setItem('ancerlop:intro', '1'); } catch (e) { /* modo privado */ }
+  }
+
+  function avisar() {
+    var aviso = document.getElementById('avisoLocal');
+    if (aviso) aviso.hidden = false;
+  }
+
+  function comprobar() {
+    if (document.body.classList.contains('is-ready')) return;
+
+    // Si el módulo está vivo y sólo va con retraso, se le da margen; como mucho
+    // tres veces, para que un cuelgue tampoco deje la página tapada.
+    if (window.__ancerlopArrancando && reintentos++ < 3) {
+      setTimeout(comprobar, 2000);
+      return;
+    }
+    destapar();
+  }
+
+  function arrancar() {
+    if (location.protocol === 'file:') {
+      // Aquí los módulos no van a cargar nunca: mejor decirlo que dejar el 5.
+      destapar();
+      avisar();
+      return;
+    }
+    setTimeout(comprobar, ESPERA);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', arrancar);
+  } else {
+    arrancar();
+  }
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mockup 03 · Estudio creativo — ancerlop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --azul:#1b2cff; --acido:#e9ff45; --tinta:#0a0a0a; --papel:#f4f1e8; --naranja:#cf3f12; --naranja-claro:#ffa075;
+    --disp:'Bricolage Grotesque',system-ui,sans-serif; --sans:'Space Grotesk',system-ui,sans-serif;
+    --mono:'JetBrains Mono',monospace;
+    --gut:clamp(16px,4vw,52px);
+  }
+  *{box-sizing:border-box}
+  /* la etiqueta del héroe va rotada y su caja girada asoma unos píxeles: se
+     recorta el desbordamiento horizontal en lugar de dejar que ensanche el
+     documento */
+  html, body{overflow-x:clip}
+  body{margin:0;background:var(--papel);color:var(--tinta);font-family:var(--sans);line-height:1.55;
+       -webkit-font-smoothing:antialiased;overflow-x:clip}
+  h1,h2,h3,p{margin:0}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+
+  /* ---------- barra ---------- */
+  header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;
+         padding:12px var(--gut);background:var(--azul);color:#fff;border-bottom:3px solid var(--tinta)}
+  .firma{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.03em}
+  header nav{margin-left:auto;display:flex;gap:18px}
+  header nav a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+               padding:5px 10px;border-radius:99px;border:1.5px solid rgba(255,255,255,.35)}
+  header nav a:hover{background:var(--acido);color:var(--tinta);border-color:var(--acido)}
+
+  @media (max-width: 640px) {
+    header{flex-wrap:wrap;gap:10px}
+    header nav{margin-left:0;width:100%;gap:10px;flex-wrap:wrap}
+  }
+
+  /* ---------- portada ---------- */
+  .hero{background:var(--azul);color:#fff;border-bottom:3px solid var(--tinta);
+        padding:clamp(36px,8vh,84px) var(--gut) clamp(28px,6vh,56px);position:relative;overflow:hidden}
+  .hero .etq{display:inline-block;background:var(--acido);color:var(--tinta);padding:6px 12px;
+             font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+             border:2px solid var(--tinta);border-radius:99px;rotate:-1.5deg}
+  .hero h1{font-family:var(--disp);font-weight:800;letter-spacing:-.045em;line-height:.86;
+           font-size:clamp(36px,10.4vw,168px);margin-top:clamp(16px,3vh,32px)}
+  .hero h1 span{display:block}
+  .hero h1 u{text-decoration:none;color:var(--acido)}
+  .hero h1 em{font-style:italic;font-weight:400;color:var(--naranja-claro)}
+  .hero .pie{margin-top:clamp(20px,4vh,36px);display:grid;gap:14px}
+  @media(min-width:820px){.hero .pie{grid-template-columns:1.2fr .8fr;align-items:end}}
+  .hero .pie p{font-size:clamp(16px,1.7vw,20px);max-width:min(46ch,100%);color:#dfe2ff}
+  .hero .pie p b{color:#fff}
+  .flecha{font-family:var(--disp);font-size:clamp(30px,5vw,54px);font-weight:800;line-height:1;
+          color:var(--acido);justify-self:end}
+
+  /* ---------- marquesina ---------- */
+  .marq{background:var(--acido);border-bottom:3px solid var(--tinta);overflow:hidden;padding:11px 0}
+  .marq div{display:flex;gap:34px;width:max-content;animation:corre 26s linear infinite;
+            font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:-.02em;white-space:nowrap}
+  .marq div span{display:flex;gap:34px;align-items:center}
+  .marq b{color:var(--azul)}
+  @keyframes corre{to{translate:-50% 0}}
+
+  /* ---------- bloques ---------- */
+  main{padding:clamp(34px,7vh,72px) var(--gut)}
+  .cabeza{display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-bottom:20px;
+          border-bottom:2px solid var(--tinta);padding-bottom:10px}
+  .cabeza h2{font-family:var(--disp);font-weight:800;font-size:clamp(24px,3.6vw,42px);letter-spacing:-.035em}
+
+  /* En móvil la rejilla es de UNA columna: los `span` sólo pueden declararse
+     dentro de la media query. Puestos en la base obligan al grid a crear seis
+     columnas y el contenido se sale de la pantalla. */
+  .bento{display:grid;gap:14px;grid-template-columns:1fr}
+  .c{border:3px solid var(--tinta);border-radius:20px;padding:22px;display:grid;gap:9px;align-content:start;
+     background:#fff;transition:translate .18s, box-shadow .18s}
+  .c:hover{translate:0 -3px;box-shadow:6px 6px 0 var(--tinta)}
+  .c h3{font-family:var(--disp);font-weight:700;font-size:20px;letter-spacing:-.02em;line-height:1.15}
+  .c p{font-size:14.5px;color:#3a3a34}
+  .c .n{font-family:var(--mono);font-size:11px;letter-spacing:.14em}
+  .c.azul{background:var(--azul);color:#fff}
+  .c.azul p{color:#d5d9ff}
+  .c.azul .n{color:var(--acido)}
+  .c.acido{background:var(--acido)}
+  .c.naranja{background:var(--naranja);color:#fff}
+  .c.naranja p{color:#fff}
+  @media(min-width:760px){
+    .bento{grid-template-columns:repeat(6,1fr)}
+    .c.azul{grid-column:span 4;grid-row:span 2}
+    .c--3{grid-column:span 3}
+    .c--2{grid-column:span 2}
+    .c.abajo{grid-column:span 2}
+  }
+
+  /* criaturas de muestra */
+  .vivero{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .bicho{width:74px;height:74px;flex:none}
+
+  /* ---------- hueco ---------- */
+  .hueco{border:3px dashed #a9a496;border-radius:20px;min-height:200px;display:grid;place-items:center;
+         text-align:center;padding:18px;background:repeating-linear-gradient(45deg,transparent 0 10px,rgba(10,10,10,.04) 10px 11px)}
+  .hueco span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6f6a5e}
+
+  /* ---------- cierre ---------- */
+  .cierre{margin:clamp(34px,7vh,72px) 0 0;background:var(--tinta);color:#fff;border-radius:24px;
+          padding:clamp(26px,5vw,52px);display:grid;gap:22px}
+  @media(min-width:800px){.cierre{grid-template-columns:1.2fr 1fr;align-items:center}}
+  .cierre h2{font-family:var(--disp);font-weight:800;font-size:clamp(26px,4vw,46px);letter-spacing:-.04em;line-height:1}
+  .cierre h2 u{text-decoration:none;color:var(--acido)}
+  .cierre .vias{display:grid;gap:9px;font-size:17px}
+  .cierre .vias a{border-bottom:2px solid rgba(255,255,255,.35);padding-bottom:2px;justify-self:start}
+  .cierre .vias a:hover{border-color:var(--acido);color:var(--acido)}
+
+  footer{padding:24px var(--gut) 40px;display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;
+         font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:#57534a;text-transform:uppercase}
+
+  .marca{position:fixed;right:10px;bottom:10px;z-index:30;font-family:var(--mono);font-size:10px;
+         letter-spacing:.12em;text-transform:uppercase;background:var(--tinta);color:var(--acido);
+         padding:5px 9px;border-radius:6px;opacity:.9}
+
+  @media (prefers-reduced-motion:reduce){.marq div{animation:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="firma">ancerlop</span>
+  <nav>
+    <a href="#hacemos">Qué hacemos</a>
+    <a href="#kreatures">Kreatures</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <span class="etq">Málaga · desde el 13 de octubre en Koniec Films</span>
+  <h1>
+    <span>Entreno</span>
+    <span><u>inteligencias,</u></span>
+    <span><em>construyo</em> mundos.</span>
+  </h1>
+  <div class="pie">
+    <p>
+      Soy <b>Andrés Cervantes López</b>. Director técnico en cine de animación, ex laboratorio de
+      inteligencia artificial y fundador de <b>Kreatures</b>, estudio creativo-tecnológico en el
+      Polo de Contenidos Digitales de Málaga.
+    </p>
+    <span class="flecha">↓</span>
+  </div>
+</section>
+
+<div class="marq" aria-hidden="true">
+  <div>
+    <span>Herramientas a medida <b>✳</b> IA aplicada <b>✳</b> Videojuegos y XR <b>✳</b> Arte procedural <b>✳</b> Prototipado <b>✳</b></span>
+    <span>Herramientas a medida <b>✳</b> IA aplicada <b>✳</b> Videojuegos y XR <b>✳</b> Arte procedural <b>✳</b> Prototipado <b>✳</b></span>
+  </div>
+</div>
+
+<main>
+
+  <div class="cabeza" id="hacemos">
+    <h2>Qué hacemos</h2>
+    <span class="mono">05 cosas · sin relleno</span>
+  </div>
+
+  <div class="bento">
+    <article class="c azul">
+      <span class="n">01 — KREATURES</span>
+      <h3>Entramos donde hace falta músculo técnico y criterio creativo a la vez.</h3>
+      <p>Estudio de outsourcing creativo-tecnológico. Trabajamos por hitos y con el código abierto por bandera: nada de cajas negras que os aten a nosotros.</p>
+      <div class="vivero" aria-hidden="true">
+        <svg class="bicho" viewBox="0 0 100 100"><path d="M50 20c17 0 28 12 28 27S67 82 50 82 22 62 22 47 33 20 50 20Z" fill="#e9ff45" stroke="#0a0a0a" stroke-width="3"/><circle cx="41" cy="46" r="8" fill="#fff" stroke="#0a0a0a" stroke-width="3"/><circle cx="59" cy="46" r="8" fill="#fff" stroke="#0a0a0a" stroke-width="3"/><circle cx="43" cy="47" r="3.4" fill="#0a0a0a"/><circle cx="61" cy="47" r="3.4" fill="#0a0a0a"/><path d="M43 63q7 6 14 0" fill="none" stroke="#0a0a0a" stroke-width="3" stroke-linecap="round"/></svg>
+        <svg class="bicho" viewBox="0 0 100 100"><ellipse cx="50" cy="52" rx="30" ry="26" fill="#ff5c2b" stroke="#0a0a0a" stroke-width="3"/><circle cx="44" cy="42" r="9" fill="#fff" stroke="#0a0a0a" stroke-width="3"/><circle cx="46" cy="43" r="3.6" fill="#0a0a0a"/><path d="M38 26 32 12M62 26l6-14" stroke="#0a0a0a" stroke-width="3" stroke-linecap="round"/><circle cx="31" cy="10" r="4" fill="#e9ff45" stroke="#0a0a0a" stroke-width="2.5"/><circle cx="69" cy="10" r="4" fill="#e9ff45" stroke="#0a0a0a" stroke-width="2.5"/></svg>
+        <svg class="bicho" viewBox="0 0 100 100"><path d="M50 22c16 0 26 11 26 25 0 16-12 27-26 27S24 63 24 47c0-14 10-25 26-25Z" fill="#f4f1e8" stroke="#0a0a0a" stroke-width="3"/><circle cx="40" cy="45" r="7" fill="#0a0a0a"/><circle cx="60" cy="45" r="7" fill="#0a0a0a"/><circle cx="41" cy="43" r="2.4" fill="#fff"/><circle cx="61" cy="43" r="2.4" fill="#fff"/></svg>
+      </div>
+    </article>
+
+    <article class="c c--3">
+      <span class="n">02</span>
+      <h3>Herramientas a medida</h3>
+      <p>Software para el cuello de botella concreto de tu producción.</p>
+    </article>
+    <article class="c c--3 acido">
+      <span class="n">03</span>
+      <h3>IA aplicada</h3>
+      <p>Visión, datos y automatización con retorno medible.</p>
+    </article>
+    <article class="c c--2 naranja">
+      <span class="n">04</span>
+      <h3>Juegos y XR</h3>
+      <p>Unity y tiempo real, del prototipo a la build.</p>
+    </article>
+    <article class="c c--2 abajo">
+      <span class="n">05</span>
+      <h3>Arte procedural</h3>
+      <p>Variación por código: criaturas, terreno, pelo.</p>
+    </article>
+
+    <article class="c c--2" style="padding:0;border:0;background:none">
+      <div class="hueco" style="min-height:100%;border:3px dashed #a9a496">
+        <span>Imagen · pendiente</span>
+      </div>
+    </article>
+  </div>
+
+  <div class="cabeza" id="kreatures" style="margin-top:clamp(34px,7vh,68px)">
+    <h2>El vivero</h2>
+    <span class="mono">Muestra · no es material final</span>
+  </div>
+  <div class="hueco" style="min-height:clamp(180px,30vh,300px)">
+    <span>Captura o vídeo de proyecto · pendiente de material real</span>
+  </div>
+
+  <div class="cierre" id="contacto">
+    <h2>¿Lo montamos <u>juntos</u>?</h2>
+    <div class="vias">
+      <a href="mailto:ancerlop@gmail.com">ancerlop@gmail.com</a>
+      <a href="tel:+34657219277">+34 657 219 277</a>
+      <span class="mono" style="color:#9a978d">Málaga · remoto o presencial</span>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>© 2026 Andrés Cervantes López</span>
+  <span>Kreatures · Polo de Contenidos Digitales · PTA Málaga</span>
+</footer>
+
+<p class="marca">Mockup 03 · estudio creativo</p>
+
+</body>
+</html>
